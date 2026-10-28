@@ -1,0 +1,19 @@
+model:
+  name: ConditionalGenerator
+  num_classes: 156
+  latent_dim: 64
+  class_emb_dim: 32
+  style_dim: 4
+
+training:
+  batch_size: 32
+  epochs: 35
+  quick_epochs: 5
+  g_lr: 0.0002
+  d_lr: 0.0002
+  beta1: 0.5
+  beta2: 0.999
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/generator.onnx

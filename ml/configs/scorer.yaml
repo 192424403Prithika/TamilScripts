@@ -1,0 +1,18 @@
+model:
+  name: QualityScorerCNN
+  input_size: [64, 64]
+  targets:
+    - overall
+    - proportions
+    - loops
+    - smoothness
+
+training:
+  batch_size: 32
+  epochs: 20
+  quick_epochs: 5
+  lr: 0.001
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/scorer.onnx

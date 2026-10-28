@@ -1,0 +1,637 @@
+{
+  "format": "layers-model",
+  "generatedBy": "TamilScript-AI PyTorch-TFJS Exporter 1.0",
+  "convertedBy": "TensorFlow.js Converter v4.20.0",
+  "modelTopology": {
+    "class_name": "Sequential",
+    "config": {
+      "name": "LightweightTamilRecognizer",
+      "layers": [
+        {
+          "class_name": "InputLayer",
+          "config": {
+            "batch_input_shape": [
+              null,
+              64,
+              64,
+              1
+            ],
+            "dtype": "float32",
+            "name": "input_1"
+          }
+        },
+        {
+          "class_name": "Conv2D",
+          "config": {
+            "name": "conv1",
+            "filters": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "strides": [
+              2,
+              2
+            ],
+            "padding": "same",
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "SeparableConv2D",
+          "config": {
+            "name": "sep_conv1",
+            "filters": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "strides": [
+              2,
+              2
+            ],
+            "padding": "same",
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "SeparableConv2D",
+          "config": {
+            "name": "sep_conv2",
+            "filters": 128,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "strides": [
+              2,
+              2
+            ],
+            "padding": "same",
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "GlobalAveragePooling2D",
+          "config": {
+            "name": "gap"
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "name": "classifier",
+            "units": 156,
+            "activation": "softmax"
+          }
+        }
+      ]
+    }
+  },
+  "weightsManifest": [
+    {
+      "paths": [
+        "group1-shard1of1.bin"
+      ],
+      "weights": [
+        {
+          "name": "temperature",
+          "shape": [
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/0/weight",
+          "shape": [
+            32,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/1/weight",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/1/bias",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/1/running_mean",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/1/running_var",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stem/1/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/depthwise/weight",
+          "shape": [
+            32,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/pointwise/weight",
+          "shape": [
+            32,
+            32,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/bn/weight",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/bn/bias",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/bn/running_mean",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/bn/running_var",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv1/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/depthwise/weight",
+          "shape": [
+            32,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/pointwise/weight",
+          "shape": [
+            32,
+            32,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/bn/weight",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/bn/bias",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/bn/running_mean",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/bn/running_var",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/conv2/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/se/fc1/weight",
+          "shape": [
+            8,
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage1/0/se/fc2/weight",
+          "shape": [
+            32,
+            8
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/depthwise/weight",
+          "shape": [
+            32,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/pointwise/weight",
+          "shape": [
+            64,
+            32,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/bn/weight",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/bn/bias",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/bn/running_mean",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/bn/running_var",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down2/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/depthwise/weight",
+          "shape": [
+            64,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/pointwise/weight",
+          "shape": [
+            64,
+            64,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/bn/weight",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/bn/bias",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/bn/running_mean",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/bn/running_var",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv1/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/depthwise/weight",
+          "shape": [
+            64,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/pointwise/weight",
+          "shape": [
+            64,
+            64,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/bn/weight",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/bn/bias",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/bn/running_mean",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/bn/running_var",
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/conv2/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/se/fc1/weight",
+          "shape": [
+            16,
+            64
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage2/0/se/fc2/weight",
+          "shape": [
+            64,
+            16
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/depthwise/weight",
+          "shape": [
+            64,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/pointwise/weight",
+          "shape": [
+            128,
+            64,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/bn/weight",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/bn/bias",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/bn/running_mean",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/bn/running_var",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "down3/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/depthwise/weight",
+          "shape": [
+            128,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/pointwise/weight",
+          "shape": [
+            128,
+            128,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/bn/weight",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/bn/bias",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/bn/running_mean",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/bn/running_var",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv1/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/depthwise/weight",
+          "shape": [
+            128,
+            1,
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/pointwise/weight",
+          "shape": [
+            128,
+            128,
+            1,
+            1
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/bn/weight",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/bn/bias",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/bn/running_mean",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/bn/running_var",
+          "shape": [
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/conv2/bn/num_batches_tracked",
+          "shape": [],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/se/fc1/weight",
+          "shape": [
+            32,
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "stage3/0/se/fc2/weight",
+          "shape": [
+            128,
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "head/2/weight",
+          "shape": [
+            156,
+            128
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "head/2/bias",
+          "shape": [
+            156
+          ],
+          "dtype": "float32"
+        }
+      ]
+    }
+  ]
+}

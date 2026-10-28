@@ -1,0 +1,14 @@
+model:
+  name: TamilCRNN
+  num_classes: 157 # 156 characters + 1 blank
+  hidden_size: 256
+
+training:
+  batch_size: 32
+  epochs: 30
+  quick_epochs: 5
+  lr: 0.0005
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/crnn.onnx

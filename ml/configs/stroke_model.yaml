@@ -1,0 +1,22 @@
+model:
+  name: StrokeSequenceRecognizer
+  input_dim: 4 # x, y, pen_down, dt
+  hidden_dim: 128
+  num_layers: 2
+  num_classes: 156
+
+ensemble:
+  type: NeuralFusionEnsemble
+  fusion_dim: 312
+
+training:
+  batch_size: 32
+  epochs: 25
+  quick_epochs: 5
+  lr: 0.001
+  weight_decay: 0.001
+  optimizer: AdamW
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/stroke_model.onnx

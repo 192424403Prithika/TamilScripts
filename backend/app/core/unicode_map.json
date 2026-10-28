@@ -1,0 +1,1406 @@
+[
+  {
+    "id": 0,
+    "char": "அ",
+    "transliteration": "a",
+    "category": "vowel",
+    "unicode": "U+0B85",
+    "meaning": "short 'a' as in 'cup'",
+    "stroke_count": 2
+  },
+  {
+    "id": 1,
+    "char": "ஆ",
+    "transliteration": "aa",
+    "category": "vowel",
+    "unicode": "U+0B86",
+    "meaning": "long 'aa' as in 'father'",
+    "stroke_count": 3
+  },
+  {
+    "id": 2,
+    "char": "இ",
+    "transliteration": "i",
+    "category": "vowel",
+    "unicode": "U+0B87",
+    "meaning": "short 'i' as in 'bit'",
+    "stroke_count": 3
+  },
+  {
+    "id": 3,
+    "char": "ஈ",
+    "transliteration": "ee",
+    "category": "vowel",
+    "unicode": "U+0B88",
+    "meaning": "long 'ee' as in 'feet'",
+    "stroke_count": 3
+  },
+  {
+    "id": 4,
+    "char": "உ",
+    "transliteration": "u",
+    "category": "vowel",
+    "unicode": "U+0B89",
+    "meaning": "short 'u' as in 'put'",
+    "stroke_count": 2
+  },
+  {
+    "id": 5,
+    "char": "ஊ",
+    "transliteration": "oo",
+    "category": "vowel",
+    "unicode": "U+0B8A",
+    "meaning": "long 'oo' as in 'boot'",
+    "stroke_count": 3
+  },
+  {
+    "id": 6,
+    "char": "எ",
+    "transliteration": "e",
+    "category": "vowel",
+    "unicode": "U+0B8E",
+    "meaning": "short 'e' as in 'bed'",
+    "stroke_count": 2
+  },
+  {
+    "id": 7,
+    "char": "ஏ",
+    "transliteration": "ae",
+    "category": "vowel",
+    "unicode": "U+0B8F",
+    "meaning": "long 'ae' as in 'make'",
+    "stroke_count": 2
+  },
+  {
+    "id": 8,
+    "char": "ஐ",
+    "transliteration": "ai",
+    "category": "vowel",
+    "unicode": "U+0B90",
+    "meaning": "diphthong 'ai' as in 'eye'",
+    "stroke_count": 3
+  },
+  {
+    "id": 9,
+    "char": "ஒ",
+    "transliteration": "o",
+    "category": "vowel",
+    "unicode": "U+0B92",
+    "meaning": "short 'o' as in 'pot'",
+    "stroke_count": 3
+  },
+  {
+    "id": 10,
+    "char": "ஓ",
+    "transliteration": "oa",
+    "category": "vowel",
+    "unicode": "U+0B93",
+    "meaning": "long 'oa' as in 'boat'",
+    "stroke_count": 3
+  },
+  {
+    "id": 11,
+    "char": "ஔ",
+    "transliteration": "au",
+    "category": "vowel",
+    "unicode": "U+0B94",
+    "meaning": "diphthong 'au' as in 'cow'",
+    "stroke_count": 4
+  },
+  {
+    "id": 12,
+    "char": "ஃ",
+    "transliteration": "ak",
+    "category": "special",
+    "unicode": "U+0B83",
+    "meaning": "Ayutha Ezhuthu (visarga/gemination marker)",
+    "stroke_count": 3
+  },
+  {
+    "id": 13,
+    "char": "க்",
+    "transliteration": "k",
+    "category": "pure_consonant",
+    "unicode": "U+0B95 U+0BCD",
+    "meaning": "velar plosive 'k'",
+    "stroke_count": 3
+  },
+  {
+    "id": 14,
+    "char": "ங்",
+    "transliteration": "ng",
+    "category": "pure_consonant",
+    "unicode": "U+0B99 U+0BCD",
+    "meaning": "velar nasal 'ng'",
+    "stroke_count": 3
+  },
+  {
+    "id": 15,
+    "char": "ச்",
+    "transliteration": "ch",
+    "category": "pure_consonant",
+    "unicode": "U+0B9A U+0BCD",
+    "meaning": "palatal affricate 'ch'",
+    "stroke_count": 3
+  },
+  {
+    "id": 16,
+    "char": "ஞ்",
+    "transliteration": "nj",
+    "category": "pure_consonant",
+    "unicode": "U+0B9E U+0BCD",
+    "meaning": "palatal nasal 'ny'",
+    "stroke_count": 4
+  },
+  {
+    "id": 17,
+    "char": "ட்",
+    "transliteration": "t",
+    "category": "pure_consonant",
+    "unicode": "U+0B9F U+0BCD",
+    "meaning": "retroflex plosive 't'",
+    "stroke_count": 2
+  },
+  {
+    "id": 18,
+    "char": "ண்",
+    "transliteration": "N",
+    "category": "pure_consonant",
+    "unicode": "U+0BA3 U+0BCD",
+    "meaning": "retroflex nasal 'N'",
+    "stroke_count": 4
+  },
+  {
+    "id": 19,
+    "char": "த்",
+    "transliteration": "th",
+    "category": "pure_consonant",
+    "unicode": "U+0BA4 U+0BCD",
+    "meaning": "dental plosive 'th'",
+    "stroke_count": 3
+  },
+  {
+    "id": 20,
+    "char": "ந்",
+    "transliteration": "nth",
+    "category": "pure_consonant",
+    "unicode": "U+0BA8 U+0BCD",
+    "meaning": "dental nasal 'n'",
+    "stroke_count": 3
+  },
+  {
+    "id": 21,
+    "char": "ப்",
+    "transliteration": "p",
+    "category": "pure_consonant",
+    "unicode": "U+0BAA U+0BCD",
+    "meaning": "bilabial plosive 'p'",
+    "stroke_count": 2
+  },
+  {
+    "id": 22,
+    "char": "ம்",
+    "transliteration": "m",
+    "category": "pure_consonant",
+    "unicode": "U+0BAE U+0BCD",
+    "meaning": "bilabial nasal 'm'",
+    "stroke_count": 3
+  },
+  {
+    "id": 23,
+    "char": "ய்",
+    "transliteration": "y",
+    "category": "pure_consonant",
+    "unicode": "U+0BAF U+0BCD",
+    "meaning": "palatal approximant 'y'",
+    "stroke_count": 3
+  },
+  {
+    "id": 24,
+    "char": "ர்",
+    "transliteration": "r",
+    "category": "pure_consonant",
+    "unicode": "U+0BB0 U+0BCD",
+    "meaning": "alveolar flap 'r'",
+    "stroke_count": 2
+  },
+  {
+    "id": 25,
+    "char": "ல்",
+    "transliteration": "l",
+    "category": "pure_consonant",
+    "unicode": "U+0BB2 U+0BCD",
+    "meaning": "alveolar lateral 'l'",
+    "stroke_count": 3
+  },
+  {
+    "id": 26,
+    "char": "வ்",
+    "transliteration": "v",
+    "category": "pure_consonant",
+    "unicode": "U+0BB5 U+0BCD",
+    "meaning": "labiodental approximant 'v'",
+    "stroke_count": 3
+  },
+  {
+    "id": 27,
+    "char": "ழ்",
+    "transliteration": "zh",
+    "category": "pure_consonant",
+    "unicode": "U+0BB4 U+0BCD",
+    "meaning": "retroflex approximant 'zh'",
+    "stroke_count": 3
+  },
+  {
+    "id": 28,
+    "char": "ள்",
+    "transliteration": "L",
+    "category": "pure_consonant",
+    "unicode": "U+0BB3 U+0BCD",
+    "meaning": "retroflex lateral 'L'",
+    "stroke_count": 3
+  },
+  {
+    "id": 29,
+    "char": "ற்",
+    "transliteration": "R",
+    "category": "pure_consonant",
+    "unicode": "U+0BB1 U+0BCD",
+    "meaning": "alveolar trill 'R'",
+    "stroke_count": 3
+  },
+  {
+    "id": 30,
+    "char": "ன்",
+    "transliteration": "n",
+    "category": "pure_consonant",
+    "unicode": "U+0BA9 U+0BCD",
+    "meaning": "alveolar nasal 'n'",
+    "stroke_count": 3
+  },
+  {
+    "id": 31,
+    "char": "க",
+    "transliteration": "ka",
+    "category": "consonant",
+    "unicode": "U+0B95",
+    "meaning": "consonant 'ka'",
+    "stroke_count": 2
+  },
+  {
+    "id": 32,
+    "char": "ங",
+    "transliteration": "nga",
+    "category": "consonant",
+    "unicode": "U+0B99",
+    "meaning": "consonant 'nga'",
+    "stroke_count": 2
+  },
+  {
+    "id": 33,
+    "char": "ச",
+    "transliteration": "cha",
+    "category": "consonant",
+    "unicode": "U+0B9A",
+    "meaning": "consonant 'cha'",
+    "stroke_count": 2
+  },
+  {
+    "id": 34,
+    "char": "ஞ",
+    "transliteration": "nja",
+    "category": "consonant",
+    "unicode": "U+0B9E",
+    "meaning": "consonant 'nya'",
+    "stroke_count": 3
+  },
+  {
+    "id": 35,
+    "char": "ட",
+    "transliteration": "ta",
+    "category": "consonant",
+    "unicode": "U+0B9F",
+    "meaning": "consonant 'ta'",
+    "stroke_count": 1
+  },
+  {
+    "id": 36,
+    "char": "ண",
+    "transliteration": "Na",
+    "category": "consonant",
+    "unicode": "U+0BA3",
+    "meaning": "consonant 'Na'",
+    "stroke_count": 3
+  },
+  {
+    "id": 37,
+    "char": "த",
+    "transliteration": "tha",
+    "category": "consonant",
+    "unicode": "U+0BA4",
+    "meaning": "consonant 'tha'",
+    "stroke_count": 2
+  },
+  {
+    "id": 38,
+    "char": "ந",
+    "transliteration": "na",
+    "category": "consonant",
+    "unicode": "U+0BA8",
+    "meaning": "consonant 'na'",
+    "stroke_count": 2
+  },
+  {
+    "id": 39,
+    "char": "ப",
+    "transliteration": "pa",
+    "category": "consonant",
+    "unicode": "U+0BAA",
+    "meaning": "consonant 'pa'",
+    "stroke_count": 1
+  },
+  {
+    "id": 40,
+    "char": "ம",
+    "transliteration": "ma",
+    "category": "consonant",
+    "unicode": "U+0BAE",
+    "meaning": "consonant 'ma'",
+    "stroke_count": 2
+  },
+  {
+    "id": 41,
+    "char": "ய",
+    "transliteration": "ya",
+    "category": "consonant",
+    "unicode": "U+0BAF",
+    "meaning": "consonant 'ya'",
+    "stroke_count": 2
+  },
+  {
+    "id": 42,
+    "char": "ர",
+    "transliteration": "ra",
+    "category": "consonant",
+    "unicode": "U+0BB0",
+    "meaning": "consonant 'ra'",
+    "stroke_count": 1
+  },
+  {
+    "id": 43,
+    "char": "ல",
+    "transliteration": "la",
+    "category": "consonant",
+    "unicode": "U+0BB2",
+    "meaning": "consonant 'la'",
+    "stroke_count": 2
+  },
+  {
+    "id": 44,
+    "char": "வ",
+    "transliteration": "va",
+    "category": "consonant",
+    "unicode": "U+0BB5",
+    "meaning": "consonant 'va'",
+    "stroke_count": 2
+  },
+  {
+    "id": 45,
+    "char": "ழ",
+    "transliteration": "zha",
+    "category": "consonant",
+    "unicode": "U+0BB4",
+    "meaning": "consonant 'zha'",
+    "stroke_count": 2
+  },
+  {
+    "id": 46,
+    "char": "ள",
+    "transliteration": "La",
+    "category": "consonant",
+    "unicode": "U+0BB3",
+    "meaning": "consonant 'La'",
+    "stroke_count": 2
+  },
+  {
+    "id": 47,
+    "char": "ற",
+    "transliteration": "Ra",
+    "category": "consonant",
+    "unicode": "U+0BB1",
+    "meaning": "consonant 'Ra'",
+    "stroke_count": 2
+  },
+  {
+    "id": 48,
+    "char": "ன",
+    "transliteration": "na",
+    "category": "consonant",
+    "unicode": "U+0BA9",
+    "meaning": "consonant 'na'",
+    "stroke_count": 2
+  },
+  {
+    "id": 49,
+    "char": "ஜ",
+    "transliteration": "ja",
+    "category": "grantha",
+    "unicode": "U+0B9C",
+    "meaning": "Grantha consonant 'ja'",
+    "stroke_count": 3
+  },
+  {
+    "id": 50,
+    "char": "ஷ",
+    "transliteration": "sha",
+    "category": "grantha",
+    "unicode": "U+0BA7",
+    "meaning": "Grantha consonant 'sha'",
+    "stroke_count": 3
+  },
+  {
+    "id": 51,
+    "char": "ஸ",
+    "transliteration": "sa",
+    "category": "grantha",
+    "unicode": "U+0BB8",
+    "meaning": "Grantha consonant 'sa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 52,
+    "char": "ஹ",
+    "transliteration": "ha",
+    "category": "grantha",
+    "unicode": "U+0BB9",
+    "meaning": "Grantha consonant 'ha'",
+    "stroke_count": 3
+  },
+  {
+    "id": 53,
+    "char": "க்ஷ",
+    "transliteration": "ksha",
+    "category": "grantha",
+    "unicode": "U+0B95 U+0BCD U+0BA7",
+    "meaning": "Grantha ligature 'ksha'",
+    "stroke_count": 4
+  },
+  {
+    "id": 54,
+    "char": "ஸ்ரீ",
+    "transliteration": "sri",
+    "category": "grantha",
+    "unicode": "U+0BB8 U+0BCD U+0BB0 U+0BC0",
+    "meaning": "Auspicious symbol 'sri'",
+    "stroke_count": 4
+  },
+  {
+    "id": 55,
+    "char": "கா",
+    "transliteration": "kaa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BBE",
+    "meaning": "Compound 'kaa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 56,
+    "char": "கி",
+    "transliteration": "ki",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BBF",
+    "meaning": "Compound 'ki'",
+    "stroke_count": 3
+  },
+  {
+    "id": 57,
+    "char": "கீ",
+    "transliteration": "kee",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC0",
+    "meaning": "Compound 'kee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 58,
+    "char": "கு",
+    "transliteration": "ku",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC1",
+    "meaning": "Compound 'ku'",
+    "stroke_count": 3
+  },
+  {
+    "id": 59,
+    "char": "கூ",
+    "transliteration": "koo",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC2",
+    "meaning": "Compound 'koo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 60,
+    "char": "கெ",
+    "transliteration": "ke",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC6",
+    "meaning": "Compound 'ke'",
+    "stroke_count": 3
+  },
+  {
+    "id": 61,
+    "char": "கே",
+    "transliteration": "kae",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC7",
+    "meaning": "Compound 'kae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 62,
+    "char": "கை",
+    "transliteration": "kai",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BC8",
+    "meaning": "Compound 'kai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 63,
+    "char": "கொ",
+    "transliteration": "ko",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BCA",
+    "meaning": "Compound 'ko'",
+    "stroke_count": 4
+  },
+  {
+    "id": 64,
+    "char": "கோ",
+    "transliteration": "koa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BCB",
+    "meaning": "Compound 'koa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 65,
+    "char": "கௌ",
+    "transliteration": "kau",
+    "category": "vowel_consonant",
+    "unicode": "U+0B95 U+0BCC",
+    "meaning": "Compound 'kau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 66,
+    "char": "சா",
+    "transliteration": "chaa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BBE",
+    "meaning": "Compound 'chaa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 67,
+    "char": "சி",
+    "transliteration": "chi",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BBF",
+    "meaning": "Compound 'chi'",
+    "stroke_count": 3
+  },
+  {
+    "id": 68,
+    "char": "சீ",
+    "transliteration": "chee",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC0",
+    "meaning": "Compound 'chee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 69,
+    "char": "சு",
+    "transliteration": "chu",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC1",
+    "meaning": "Compound 'chu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 70,
+    "char": "சூ",
+    "transliteration": "choo",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC2",
+    "meaning": "Compound 'choo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 71,
+    "char": "செ",
+    "transliteration": "che",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC6",
+    "meaning": "Compound 'che'",
+    "stroke_count": 3
+  },
+  {
+    "id": 72,
+    "char": "சே",
+    "transliteration": "chae",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC7",
+    "meaning": "Compound 'chae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 73,
+    "char": "சை",
+    "transliteration": "chai",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BC8",
+    "meaning": "Compound 'chai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 74,
+    "char": "சொ",
+    "transliteration": "cho",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BCA",
+    "meaning": "Compound 'cho'",
+    "stroke_count": 4
+  },
+  {
+    "id": 75,
+    "char": "சோ",
+    "transliteration": "choa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BCB",
+    "meaning": "Compound 'choa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 76,
+    "char": "சௌ",
+    "transliteration": "chau",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9A U+0BCC",
+    "meaning": "Compound 'chau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 77,
+    "char": "டா",
+    "transliteration": "taa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BBE",
+    "meaning": "Compound 'taa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 78,
+    "char": "டி",
+    "transliteration": "ti",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BBF",
+    "meaning": "Compound 'ti'",
+    "stroke_count": 3
+  },
+  {
+    "id": 79,
+    "char": "டீ",
+    "transliteration": "tee",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC0",
+    "meaning": "Compound 'tee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 80,
+    "char": "டு",
+    "transliteration": "tu",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC1",
+    "meaning": "Compound 'tu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 81,
+    "char": "டூ",
+    "transliteration": "too",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC2",
+    "meaning": "Compound 'too'",
+    "stroke_count": 3
+  },
+  {
+    "id": 82,
+    "char": "டெ",
+    "transliteration": "te",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC6",
+    "meaning": "Compound 'te'",
+    "stroke_count": 3
+  },
+  {
+    "id": 83,
+    "char": "டே",
+    "transliteration": "tae",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC7",
+    "meaning": "Compound 'tae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 84,
+    "char": "டை",
+    "transliteration": "tai",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BC8",
+    "meaning": "Compound 'tai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 85,
+    "char": "டொ",
+    "transliteration": "to",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BCA",
+    "meaning": "Compound 'to'",
+    "stroke_count": 4
+  },
+  {
+    "id": 86,
+    "char": "டோ",
+    "transliteration": "toa",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BCB",
+    "meaning": "Compound 'toa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 87,
+    "char": "டௌ",
+    "transliteration": "tau",
+    "category": "vowel_consonant",
+    "unicode": "U+0B9F U+0BCC",
+    "meaning": "Compound 'tau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 88,
+    "char": "தா",
+    "transliteration": "thaa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BBE",
+    "meaning": "Compound 'thaa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 89,
+    "char": "தி",
+    "transliteration": "thi",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BBF",
+    "meaning": "Compound 'thi'",
+    "stroke_count": 3
+  },
+  {
+    "id": 90,
+    "char": "தீ",
+    "transliteration": "thee",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC0",
+    "meaning": "Compound 'thee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 91,
+    "char": "து",
+    "transliteration": "thu",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC1",
+    "meaning": "Compound 'thu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 92,
+    "char": "தூ",
+    "transliteration": "thoo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC2",
+    "meaning": "Compound 'thoo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 93,
+    "char": "தெ",
+    "transliteration": "the",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC6",
+    "meaning": "Compound 'the'",
+    "stroke_count": 3
+  },
+  {
+    "id": 94,
+    "char": "தே",
+    "transliteration": "thae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC7",
+    "meaning": "Compound 'thae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 95,
+    "char": "தை",
+    "transliteration": "thai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BC8",
+    "meaning": "Compound 'thai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 96,
+    "char": "தொ",
+    "transliteration": "tho",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BCA",
+    "meaning": "Compound 'tho'",
+    "stroke_count": 4
+  },
+  {
+    "id": 97,
+    "char": "தோ",
+    "transliteration": "thoa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BCB",
+    "meaning": "Compound 'thoa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 98,
+    "char": "தௌ",
+    "transliteration": "thau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BA4 U+0BCC",
+    "meaning": "Compound 'thau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 99,
+    "char": "பா",
+    "transliteration": "paa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BBE",
+    "meaning": "Compound 'paa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 100,
+    "char": "பி",
+    "transliteration": "pi",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BBF",
+    "meaning": "Compound 'pi'",
+    "stroke_count": 3
+  },
+  {
+    "id": 101,
+    "char": "பீ",
+    "transliteration": "pee",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC0",
+    "meaning": "Compound 'pee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 102,
+    "char": "பு",
+    "transliteration": "pu",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC1",
+    "meaning": "Compound 'pu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 103,
+    "char": "பூ",
+    "transliteration": "poo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC2",
+    "meaning": "Compound 'poo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 104,
+    "char": "பெ",
+    "transliteration": "pe",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC6",
+    "meaning": "Compound 'pe'",
+    "stroke_count": 3
+  },
+  {
+    "id": 105,
+    "char": "பே",
+    "transliteration": "pae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC7",
+    "meaning": "Compound 'pae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 106,
+    "char": "பை",
+    "transliteration": "pai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BC8",
+    "meaning": "Compound 'pai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 107,
+    "char": "பொ",
+    "transliteration": "po",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BCA",
+    "meaning": "Compound 'po'",
+    "stroke_count": 4
+  },
+  {
+    "id": 108,
+    "char": "போ",
+    "transliteration": "poa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BCB",
+    "meaning": "Compound 'poa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 109,
+    "char": "பௌ",
+    "transliteration": "pau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAA U+0BCC",
+    "meaning": "Compound 'pau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 110,
+    "char": "மா",
+    "transliteration": "maa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BBE",
+    "meaning": "Compound 'maa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 111,
+    "char": "மி",
+    "transliteration": "mi",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BBF",
+    "meaning": "Compound 'mi'",
+    "stroke_count": 3
+  },
+  {
+    "id": 112,
+    "char": "மீ",
+    "transliteration": "mee",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC0",
+    "meaning": "Compound 'mee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 113,
+    "char": "மு",
+    "transliteration": "mu",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC1",
+    "meaning": "Compound 'mu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 114,
+    "char": "மூ",
+    "transliteration": "moo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC2",
+    "meaning": "Compound 'moo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 115,
+    "char": "மெ",
+    "transliteration": "me",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC6",
+    "meaning": "Compound 'me'",
+    "stroke_count": 3
+  },
+  {
+    "id": 116,
+    "char": "மே",
+    "transliteration": "mae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC7",
+    "meaning": "Compound 'mae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 117,
+    "char": "மை",
+    "transliteration": "mai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BC8",
+    "meaning": "Compound 'mai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 118,
+    "char": "மொ",
+    "transliteration": "mo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BCA",
+    "meaning": "Compound 'mo'",
+    "stroke_count": 4
+  },
+  {
+    "id": 119,
+    "char": "மோ",
+    "transliteration": "moa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BCB",
+    "meaning": "Compound 'moa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 120,
+    "char": "மௌ",
+    "transliteration": "mau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAE U+0BCC",
+    "meaning": "Compound 'mau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 121,
+    "char": "யா",
+    "transliteration": "yaa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BBE",
+    "meaning": "Compound 'yaa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 122,
+    "char": "யி",
+    "transliteration": "yi",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BBF",
+    "meaning": "Compound 'yi'",
+    "stroke_count": 3
+  },
+  {
+    "id": 123,
+    "char": "யீ",
+    "transliteration": "yee",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC0",
+    "meaning": "Compound 'yee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 124,
+    "char": "யு",
+    "transliteration": "yu",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC1",
+    "meaning": "Compound 'yu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 125,
+    "char": "யூ",
+    "transliteration": "yoo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC2",
+    "meaning": "Compound 'yoo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 126,
+    "char": "யெ",
+    "transliteration": "ye",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC6",
+    "meaning": "Compound 'ye'",
+    "stroke_count": 3
+  },
+  {
+    "id": 127,
+    "char": "யே",
+    "transliteration": "yae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC7",
+    "meaning": "Compound 'yae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 128,
+    "char": "யை",
+    "transliteration": "yai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BC8",
+    "meaning": "Compound 'yai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 129,
+    "char": "யொ",
+    "transliteration": "yo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BCA",
+    "meaning": "Compound 'yo'",
+    "stroke_count": 4
+  },
+  {
+    "id": 130,
+    "char": "யோ",
+    "transliteration": "yoa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BCB",
+    "meaning": "Compound 'yoa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 131,
+    "char": "யௌ",
+    "transliteration": "yau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BAF U+0BCC",
+    "meaning": "Compound 'yau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 132,
+    "char": "ரா",
+    "transliteration": "raa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BBE",
+    "meaning": "Compound 'raa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 133,
+    "char": "ரி",
+    "transliteration": "ri",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BBF",
+    "meaning": "Compound 'ri'",
+    "stroke_count": 3
+  },
+  {
+    "id": 134,
+    "char": "ரீ",
+    "transliteration": "ree",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC0",
+    "meaning": "Compound 'ree'",
+    "stroke_count": 3
+  },
+  {
+    "id": 135,
+    "char": "ரு",
+    "transliteration": "ru",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC1",
+    "meaning": "Compound 'ru'",
+    "stroke_count": 3
+  },
+  {
+    "id": 136,
+    "char": "ரூ",
+    "transliteration": "roo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC2",
+    "meaning": "Compound 'roo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 137,
+    "char": "ரெ",
+    "transliteration": "re",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC6",
+    "meaning": "Compound 're'",
+    "stroke_count": 3
+  },
+  {
+    "id": 138,
+    "char": "ரே",
+    "transliteration": "rae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC7",
+    "meaning": "Compound 'rae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 139,
+    "char": "ரை",
+    "transliteration": "rai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BC8",
+    "meaning": "Compound 'rai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 140,
+    "char": "ரொ",
+    "transliteration": "ro",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BCA",
+    "meaning": "Compound 'ro'",
+    "stroke_count": 4
+  },
+  {
+    "id": 141,
+    "char": "ரோ",
+    "transliteration": "roa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BCB",
+    "meaning": "Compound 'roa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 142,
+    "char": "ரௌ",
+    "transliteration": "rau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB0 U+0BCC",
+    "meaning": "Compound 'rau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 143,
+    "char": "லா",
+    "transliteration": "laa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BBE",
+    "meaning": "Compound 'laa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 144,
+    "char": "லி",
+    "transliteration": "li",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BBF",
+    "meaning": "Compound 'li'",
+    "stroke_count": 3
+  },
+  {
+    "id": 145,
+    "char": "லீ",
+    "transliteration": "lee",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC0",
+    "meaning": "Compound 'lee'",
+    "stroke_count": 3
+  },
+  {
+    "id": 146,
+    "char": "லு",
+    "transliteration": "lu",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC1",
+    "meaning": "Compound 'lu'",
+    "stroke_count": 3
+  },
+  {
+    "id": 147,
+    "char": "லூ",
+    "transliteration": "loo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC2",
+    "meaning": "Compound 'loo'",
+    "stroke_count": 3
+  },
+  {
+    "id": 148,
+    "char": "லெ",
+    "transliteration": "le",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC6",
+    "meaning": "Compound 'le'",
+    "stroke_count": 3
+  },
+  {
+    "id": 149,
+    "char": "லே",
+    "transliteration": "lae",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC7",
+    "meaning": "Compound 'lae'",
+    "stroke_count": 3
+  },
+  {
+    "id": 150,
+    "char": "லை",
+    "transliteration": "lai",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BC8",
+    "meaning": "Compound 'lai'",
+    "stroke_count": 3
+  },
+  {
+    "id": 151,
+    "char": "லொ",
+    "transliteration": "lo",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BCA",
+    "meaning": "Compound 'lo'",
+    "stroke_count": 4
+  },
+  {
+    "id": 152,
+    "char": "லோ",
+    "transliteration": "loa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BCB",
+    "meaning": "Compound 'loa'",
+    "stroke_count": 4
+  },
+  {
+    "id": 153,
+    "char": "லௌ",
+    "transliteration": "lau",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB2 U+0BCC",
+    "meaning": "Compound 'lau'",
+    "stroke_count": 4
+  },
+  {
+    "id": 154,
+    "char": "வா",
+    "transliteration": "vaa",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB5 U+0BBE",
+    "meaning": "Compound 'vaa'",
+    "stroke_count": 3
+  },
+  {
+    "id": 155,
+    "char": "வி",
+    "transliteration": "vi",
+    "category": "vowel_consonant",
+    "unicode": "U+0BB5 U+0BBF",
+    "meaning": "Compound 'vi'",
+    "stroke_count": 3
+  }
+]

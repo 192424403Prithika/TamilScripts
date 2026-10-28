@@ -1,0 +1,13 @@
+model:
+  name: WriterStyleEncoder
+  style_dim: 32
+
+training:
+  batch_size: 32
+  epochs: 20
+  quick_epochs: 5
+  lr: 0.001
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/style_encoder.onnx

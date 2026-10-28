@@ -1,0 +1,20 @@
+model:
+  name: HandwritingSynthesisMDN
+  num_chars: 156
+  char_emb_dim: 64
+  hidden_dim: 256
+  num_mixtures: 20
+
+sampling:
+  default_bias: 1.2
+  default_speed: 1.0
+
+training:
+  batch_size: 16
+  epochs: 25
+  quick_epochs: 5
+  lr: 0.0005
+  seed: 42
+
+export:
+  onnx_path: ml/export/saved_models/synth.onnx
