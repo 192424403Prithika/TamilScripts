@@ -40,3 +40,5 @@ class TextSynthesisResponse(BaseModel):
     svg_markup: str
     stroke_count: int
     estimated_duration_s: float
+    mode: Optional[str] = "Glyph-composition mode"
+    sequence_model_status: Optional[str] = "In training"

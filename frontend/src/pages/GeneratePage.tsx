@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Badge } from '../components/ui';
 import { useAppStore } from '../store/useAppStore';
-import { Download, RefreshCw, Sliders, Sparkles, Feather } from 'lucide-react';
+import { Download, RefreshCw, Sliders, Sparkles, Feather, AlertCircle } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
 export const GeneratePage: React.FC = () => {
   const { currentLang } = useAppStore();
@@ -12,6 +13,7 @@ export const GeneratePage: React.FC = () => {
   const [generatedImg, setGeneratedImg] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [genTime, setGenTime] = useState<number>(0);
+  const [modelError, setModelError] = useState<string | null>(null);
 
   // Curated character palette
   const samplePalette = [
@@ -35,8 +37,9 @@ export const GeneratePage: React.FC = () => {
   const handleGenerate = async (newSeed?: number) => {
     setLoading(true);
     const activeSeed = newSeed !== undefined ? newSeed : seed;
+    const t0 = performance.now();
     try {
-      const res = await fetch('/api/generate/character', {
+      const res = await fetch(apiUrl('/api/generate/character'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,11 +50,19 @@ export const GeneratePage: React.FC = () => {
       });
       if (res.ok) {
         const data = await res.json();
+        const clientLatency = Math.round((performance.now() - t0) * 10) / 10;
         setGeneratedImg(data.image_base64);
-        setGenTime(data.generation_time_ms);
+        setGenTime(clientLatency);
+        setModelError(null);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setModelError(err.detail || "Model not trained yet");
+        setGeneratedImg(null);
       }
     } catch (e) {
       console.error("Generation error:", e);
+      setModelError("Model not trained yet");
+      setGeneratedImg(null);
     } finally {
       setLoading(false);
     }
@@ -215,7 +226,13 @@ export const GeneratePage: React.FC = () => {
 
             {/* Glyph Stage */}
             <div className="w-full aspect-square max-w-[320px] mx-auto rounded-2xl bg-paper-canvas canvas-ruled border border-border-subtle flex items-center justify-center p-6 relative overflow-hidden shadow-inner">
-              {loading ? (
+              {modelError ? (
+                <div className="flex flex-col items-center gap-2 text-center p-4">
+                  <AlertCircle className="w-9 h-9 text-amber-500" />
+                  <span className="text-sm font-semibold text-ink-primary">Model not trained yet</span>
+                  <p className="text-xs text-ink-tertiary">Gate 1 Character Generator checkpoint is missing or training in progress.</p>
+                </div>
+              ) : loading ? (
                 <div className="flex flex-col items-center gap-2 text-ink-tertiary animate-pulse">
                   <Feather className="w-8 h-8 text-vermilion" />
                   <span className="text-xs font-mono">Neural Forward Pass...</span>
@@ -240,10 +257,10 @@ export const GeneratePage: React.FC = () => {
                 variant="primary"
                 className="flex-1"
                 onClick={() => handleGenerate()}
-                disabled={loading}
+                disabled={loading || !!modelError}
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                <span>Regenerate</span>
+                <span>{modelError ? 'Model not trained yet' : 'Regenerate'}</span>
               </Button>
 
               <Button

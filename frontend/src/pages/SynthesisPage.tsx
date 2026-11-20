@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TamilKeyboard } from '../components/TamilKeyboard';
 import { Card, Button, Badge } from '../components/ui';
 import { useAppStore } from '../store/useAppStore';
-import { Play, Download, RotateCcw, Sliders, Feather, Sparkles } from 'lucide-react';
+import { Play, Download, RotateCcw, Sliders, Feather, Sparkles, AlertCircle } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
 export const SynthesisPage: React.FC = () => {
   const { currentLang } = useAppStore();
@@ -14,6 +15,8 @@ export const SynthesisPage: React.FC = () => {
   const [svgMarkup, setSvgMarkup] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [replayKey, setReplayKey] = useState<number>(0);
+  const [synthLatency, setSynthLatency] = useState<number | null>(null);
+  const [modelError, setModelError] = useState<string | null>(null);
 
   const inkPalettes = [
     { name: 'Vermilion (செந்தூரம்)', hex: '#C8452D' },
@@ -23,11 +26,27 @@ export const SynthesisPage: React.FC = () => {
     { name: 'Palm Ochre (மஞ்சள்)', hex: '#9E7844' }
   ];
 
+  useEffect(() => {
+    fetch(apiUrl('/api/generate/status'))
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.synthesis_ready) {
+          setModelError("Model not trained yet");
+        } else {
+          setModelError(null);
+        }
+      })
+      .catch(() => {
+        setModelError("Model not trained yet");
+      });
+  }, []);
+
   const handleSynthesize = async () => {
     if (!text.trim()) return;
     setLoading(true);
+    const t0 = performance.now();
     try {
-      const res = await fetch('/api/generate/text', {
+      const res = await fetch(apiUrl('/api/generate/text'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -40,11 +59,20 @@ export const SynthesisPage: React.FC = () => {
       });
       if (res.ok) {
         const data = await res.json();
+        const clientLatency = Math.round((performance.now() - t0) * 10) / 10;
         setSvgMarkup(data.svg_markup);
+        setSynthLatency(clientLatency);
         setReplayKey((k) => k + 1);
+        setModelError(null);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setModelError(err.detail || "Model not trained yet");
+        setSvgMarkup(null);
       }
     } catch (e) {
       console.error("Synthesis error:", e);
+      setModelError("Model not trained yet");
+      setSvgMarkup(null);
     } finally {
       setLoading(false);
     }
@@ -75,7 +103,10 @@ export const SynthesisPage: React.FC = () => {
               {currentLang === 'ta' ? 'கையெழுத்து எழுத்துருவாக்கம்' : 'Text-to-Handwriting Synthesis'}
             </h1>
             <Badge variant="gold">
-              Graves LSTM-MDN
+              Glyph-composition mode
+            </Badge>
+            <Badge variant="sage">
+              Sequence model: In training
             </Badge>
           </div>
           <p className="text-sm text-ink-secondary mt-1">
@@ -116,10 +147,10 @@ export const SynthesisPage: React.FC = () => {
               size="lg"
               className="w-full"
               onClick={handleSynthesize}
-              disabled={loading || !text.trim()}
+              disabled={loading || !text.trim() || !!modelError}
             >
               <Play className="w-4 h-4 mr-2" />
-              <span>{loading ? 'Synthesizing...' : 'Draw Handwritten Sentence'}</span>
+              <span>{modelError ? 'Model not trained yet' : loading ? 'Synthesizing...' : 'Draw Handwritten Sentence'}</span>
             </Button>
           </Card>
 
@@ -223,6 +254,11 @@ export const SynthesisPage: React.FC = () => {
               <span className="text-xs font-semibold uppercase tracking-wider text-ink-secondary">
                 Handwritten Result Canvas
               </span>
+              {synthLatency !== null && (
+                <span className="font-mono text-[11px] text-ink-tertiary">
+                  Latency: {synthLatency.toFixed(1)} ms
+                </span>
+              )}
 
               {svgMarkup && (
                 <div className="flex items-center gap-2">
@@ -251,7 +287,15 @@ export const SynthesisPage: React.FC = () => {
 
             {/* Ruled Paper Stage */}
             <div className="min-h-[300px] rounded-2xl bg-paper-canvas canvas-ruled border border-border-subtle p-6 flex items-center justify-center relative overflow-hidden shadow-inner">
-              {svgMarkup ? (
+              {modelError ? (
+                <div className="text-center py-12 text-ink-tertiary space-y-3">
+                  <AlertCircle className="w-10 h-10 mx-auto text-amber-500" />
+                  <p className="text-sm font-semibold text-ink-primary">Model not trained yet</p>
+                  <p className="text-xs leading-relaxed max-w-xs mx-auto">
+                    Gate 2 Text-to-Handwriting model checkpoint is missing.
+                  </p>
+                </div>
+              ) : svgMarkup ? (
                 <div
                   key={replayKey}
                   dangerouslySetInnerHTML={{ __html: svgMarkup }}

@@ -18,6 +18,7 @@ ENV/
 *.pt
 *.pth
 *.onnx
+!ml/export/saved_models/*.onnx
 ml/data/raw/
 ml/data/processed/
 ml/runs/

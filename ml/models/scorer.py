@@ -1,32 +1,33 @@
 """
-Model 5: Handwriting Quality Scorer.
-Siamese CNN architecture with multi-task regression heads:
-- Similarity to ground truth template (0-100 quality score)
-- Proportional aspect fidelity (0-100)
-- Loop closure and stroke smoothness score (0-100)
-- Diagnostic feedback generator based on neural latent distance
+Model 5: Siamese Handwriting Quality Scorer.
+Shared CNN encoder trained with contrastive/triplet loss on uTHCD with hard negative mining.
+Auxiliary heads for sub-scores: proportions, loop closure, and smoothness.
+Calibrated 0-100 score strictly matching sub-scores.
 """
 
+import math
+from typing import Dict, Any, List
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Dict, Any
 
 class QualityScorerCNN(nn.Module):
     """
     Siamese CNN that processes:
     1. User's drawn glyph (1, 64, 64)
-    2. Canonical prototype template glyph (1, 64, 64)
+    2. Reference class prototype embedding (128)
     Outputs:
-    - Overall score (0-100)
-    - Proportions score (0-100)
-    - Loop closure & continuity score (0-100)
-    - Smoothness score (0-100)
+    - Overall score (0-100) calibrated from Siamese similarity
+    - Proportions sub-score (0-100)
+    - Loop closure & curve continuity sub-score (0-100)
+    - Stroke smoothness sub-score (0-100)
     """
-    def __init__(self):
+    def __init__(self, emb_dim: int = 128):
         super().__init__()
-        # Shared feature extractor
-        self.encoder = nn.Sequential(
+        self.emb_dim = emb_dim
+
+        # Shared CNN feature extractor
+        self.encoder_conv = nn.Sequential(
             nn.Conv2d(1, 32, 3, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(True),
@@ -40,73 +41,98 @@ class QualityScorerCNN(nn.Module):
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(True),
-            nn.AdaptiveAvgPool2d((4, 4)),  # 4x4
-            nn.Flatten()
-        )
+            nn.MaxPool2d(2, 2),  # 8x8
 
-        # Multi-task evaluation heads
-        feat_dim = 128 * 4 * 4 * 2  # Concat user + reference
-        self.fc_overall = nn.Sequential(
-            nn.Linear(feat_dim, 128),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(True),
-            nn.Linear(128, 1),
-            nn.Sigmoid()
+            nn.AdaptiveAvgPool2d((4, 4)),  # 4x4
+            nn.Flatten() # 128*4*4 = 2048
         )
 
+        self.fc_emb = nn.Linear(2048, emb_dim)
+
+        # Auxiliary heads trained on automatically measured labels
         self.fc_proportions = nn.Sequential(
-            nn.Linear(feat_dim, 64),
+            nn.Linear(2048, 64),
             nn.ReLU(True),
             nn.Linear(64, 1),
             nn.Sigmoid()
         )
 
         self.fc_loops = nn.Sequential(
-            nn.Linear(feat_dim, 64),
+            nn.Linear(2048, 64),
             nn.ReLU(True),
             nn.Linear(64, 1),
             nn.Sigmoid()
         )
 
         self.fc_smoothness = nn.Sequential(
-            nn.Linear(feat_dim, 64),
+            nn.Linear(2048, 64),
             nn.ReLU(True),
             nn.Linear(64, 1),
             nn.Sigmoid()
         )
 
-    def forward(self, user_img: torch.Tensor, ref_img: torch.Tensor):
-        feat_u = self.encoder(user_img)
-        feat_r = self.encoder(ref_img)
-        combined = torch.cat([feat_u, feat_r], dim=-1)
+        # Calibration parameters for similarity -> 0-100 score
+        self.register_buffer("calib_alpha", torch.tensor([8.0]))
+        self.register_buffer("calib_tau", torch.tensor([0.45]))
 
-        overall = self.fc_overall(combined) * 100.0
-        proportions = self.fc_proportions(combined) * 100.0
-        loops = self.fc_loops(combined) * 100.0
-        smoothness = self.fc_smoothness(combined) * 100.0
+    def encode(self, img: torch.Tensor) -> torch.Tensor:
+        feat = self.encoder_conv(img)
+        emb = self.fc_emb(feat)
+        return F.normalize(emb, p=2, dim=-1)
 
+    def forward_subscores(self, img: torch.Tensor):
+        feat = self.encoder_conv(img)
+        prop = self.fc_proportions(feat).squeeze(-1) * 100.0
+        loops = self.fc_loops(feat).squeeze(-1) * 100.0
+        smooth = self.fc_smoothness(feat).squeeze(-1) * 100.0
+        return prop, loops, smooth
+
+    def forward_similarity(self, user_img: torch.Tensor, ref_emb: torch.Tensor) -> torch.Tensor:
+        user_emb = self.encode(user_img)
+        # Cosine similarity between normalized embeddings
+        sim = torch.sum(user_emb * ref_emb, dim=-1)
+        # Calibrated logistic score in [0, 100]
+        calibrated = torch.sigmoid(self.calib_alpha * (sim - self.calib_tau)) * 100.0
+        return calibrated
+
+    def forward(self, user_img: torch.Tensor, ref_emb: torch.Tensor):
+        prop, loops, smooth = self.forward_subscores(user_img)
+        sim_score = self.forward_similarity(user_img, ref_emb)
+        # Overall score strictly bounded and mathematically consistent with parts
+        overall = 0.55 * sim_score + 0.15 * prop + 0.15 * loops + 0.15 * smooth
         return {
             "overall": overall,
-            "proportions": proportions,
+            "proportions": prop,
             "loops": loops,
-            "smoothness": smoothness
+            "smoothness": smooth,
+            "similarity": sim_score
         }
 
-    def generate_feedback(self, scores: Dict[str, float], char_name: str) -> str:
-        overall = scores["overall"]
-        loops = scores["loops"]
-        proportions = scores["proportions"]
+    def generate_feedback(self, scores: Dict[str, float], target_char: str, pred_char: str = None) -> str:
+        overall = float(scores["overall"])
+        loops = float(scores["loops"])
+        props = float(scores["proportions"])
+        smooth = float(scores["smoothness"])
 
         tips = []
-        if overall >= 90:
-            tips.append(f"Exemplary handwriting for '{char_name}'! Beautiful stroke balance and clarity.")
-        elif overall >= 75:
-            tips.append(f"Well formed '{char_name}'. Clear glyph anatomy.")
+        if pred_char and pred_char != target_char:
+            tips.append(f"Stroke shape was confused with '{pred_char}' instead of '{target_char}'.")
+
+        if overall >= 85:
+            tips.append(f"Excellent execution of '{target_char}'! Clear glyph anatomy and balance.")
+        elif overall >= 70:
+            tips.append(f"Good attempt for '{target_char}'. Matches standard proportions.")
         else:
-            tips.append(f"Needs practice for '{char_name}'.")
+            tips.append(f"Keep practicing '{target_char}'.")
 
         if loops < 70:
-            tips.append("Ensure your inner circular loops and curves are cleanly closed.")
-        if proportions < 70:
-            tips.append("Pay attention to vertical and horizontal aspect ratios.")
-            
+            tips.append("Watch circular curve closure and loops.")
+        if props < 70:
+            tips.append("Adjust height-to-width aspect ratio along the baseline.")
+        if smooth < 70:
+            tips.append("Maintain steady, continuous pen motion for smoother curves.")
+
         return " ".join(tips)

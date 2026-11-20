@@ -59,7 +59,7 @@ class LightweightTamilRecognizer(nn.Module):
     """
     def __init__(self, num_classes: int = 156, temperature: float = 1.0):
         super().__init__()
-        self.temperature = nn.Parameter(torch.ones(1) * temperature)
+        self.register_buffer("temperature", torch.tensor(temperature, dtype=torch.float32))
 
         # Initial stem
         self.stem = nn.Sequential(
@@ -103,7 +103,7 @@ class LightweightTamilRecognizer(nn.Module):
         x = self.down3(x)
         x = self.stage3(x)
         logits = self.head(x)
-        return logits / torch.clamp(self.temperature, min=0.1, max=5.0)
+        return logits / self.temperature
 
     def predict_topk(self, x: torch.Tensor, k: int = 5):
         logits = self.forward(x)

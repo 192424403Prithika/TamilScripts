@@ -15,4 +15,4 @@ class QualityScoreResponse(BaseModel):
     smoothness_score: float # 0 - 100
     feedback_text: str
     pass_status: bool
-    reference_image_base64: str
+    reference_image_base64: Optional[str] = ""

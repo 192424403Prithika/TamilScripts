@@ -3,6 +3,7 @@ import { useAppStore } from '../store/useAppStore';
 import { Card, Button, Badge } from '../components/ui';
 import { Flame, Award, CheckCircle2, XCircle, ArrowRight, Trophy, BookOpen } from 'lucide-react';
 import { LeaderboardEntry } from '../types';
+import { apiUrl } from '../lib/api';
 
 export const QuizPage: React.FC = () => {
   const { xp, addXP, streakDays, currentLang } = useAppStore();
@@ -43,7 +44,7 @@ export const QuizPage: React.FC = () => {
   const q = quizQuestions[currentQIdx];
 
   useEffect(() => {
-    fetch('/api/leaderboard')
+    fetch(apiUrl('/api/leaderboard'))
       .then((res) => res.json())
       .then((data) => setLeaderboard(data))
       .catch((err) => console.warn("Leaderboard error:", err));

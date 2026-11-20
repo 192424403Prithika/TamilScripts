@@ -8,6 +8,7 @@ class StrokePoint(BaseModel):
     dt: float = 0.025
 
 class StrokeRecognitionRequest(BaseModel):
+    model_config = {"protected_namespaces": ()}
     strokes: List[StrokePoint]
     image_base64: Optional[str] = None
     client_timestamp: Optional[float] = None
@@ -15,6 +16,7 @@ class StrokeRecognitionRequest(BaseModel):
     model_engine: str = "auto" # "auto", "huggingface", or "onnx"
 
 class ImageRecognitionRequest(BaseModel):
+    model_config = {"protected_namespaces": ()}
     image_base64: str # Base64 encoded PNG/JPEG
     client_timestamp: Optional[float] = None
     high_accuracy_mode: bool = False
@@ -46,6 +48,7 @@ class LineRecognitionRequest(BaseModel):
     image_base64: str
 
 class LineRecognitionResponse(BaseModel):
+    model_config = {"protected_namespaces": ()}
     recognized_text: str
     transliteration: str
     characters: List[str]

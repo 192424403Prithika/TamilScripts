@@ -51,7 +51,8 @@ def export_recognizer_to_onnx():
         input_names=["input"],
         output_names=["logits"],
         dynamic_axes={"input": {0: "batch_size"}, "logits": {0: "batch_size"}},
-        opset_version=14
+        opset_version=14,
+        dynamo=False
     )
 
     onnx_model = onnx.load(str(onnx_path))
@@ -73,7 +74,8 @@ def export_stroke_model_to_onnx():
         input_names=["strokes"],
         output_names=["logits"],
         dynamic_axes={"strokes": {0: "batch_size"}, "logits": {0: "batch_size"}},
-        opset_version=14
+        opset_version=14,
+        dynamo=False
     )
     onnx_model = onnx.load(str(onnx_path))
     onnx.checker.check_model(onnx_model)
@@ -93,7 +95,32 @@ def export_style_encoder_to_onnx():
         input_names=["glyph"],
         output_names=["style_embedding"],
         dynamic_axes={"glyph": {0: "batch_size"}, "style_embedding": {0: "batch_size"}},
-        opset_version=14
+        opset_version=14,
+        dynamo=False
+    )
+    onnx_model = onnx.load(str(onnx_path))
+    onnx.checker.check_model(onnx_model)
+    print(f"[+] Successfully exported {onnx_path.name}")
+
+def export_crnn_to_onnx():
+    print("[*] Exporting Model 6 (TamilCRNN) to ONNX...")
+    model = TamilCRNN(num_classes=157)
+    ckpt = ML_DIR / "checkpoints" / "crnn_best.pt"
+    if ckpt.exists():
+        model.load_state_dict(torch.load(ckpt, map_location="cpu"))
+    model.eval()
+    dummy_input = torch.randn(1, 1, 32, 128)
+    onnx_path = SAVED_DIR / "crnn.onnx"
+
+    torch.onnx.export(
+        model,
+        dummy_input,
+        str(onnx_path),
+        input_names=["image"],
+        output_names=["logits"],
+        dynamic_axes={"image": {0: "batch_size", 3: "width"}, "logits": {0: "seq_len", 1: "batch_size"}},
+        opset_version=14,
+        dynamo=False
     )
     onnx_model = onnx.load(str(onnx_path))
     onnx.checker.check_model(onnx_model)
@@ -103,6 +130,7 @@ def export_all():
     export_recognizer_to_onnx()
     export_stroke_model_to_onnx()
     export_style_encoder_to_onnx()
+    export_crnn_to_onnx()
     print("\n[+] All core models successfully exported and validated in ONNX format.")
 
 if __name__ == "__main__":

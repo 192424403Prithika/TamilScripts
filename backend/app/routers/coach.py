@@ -13,12 +13,20 @@ from ..db.models import PracticeSession
 
 router = APIRouter(prefix="/api", tags=["Coach & Explainability"])
 
+@router.get("/coach/status")
+def get_coach_status():
+    return {
+        "scorer_ready": scoring_service.is_ready()
+    }
+
 @router.post("/score", response_model=QualityScoreResponse)
 def score_handwriting(req: QualityScoreRequest, db: Session = Depends(get_db)):
     try:
         res = scoring_service.score_drawing(req)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     
     # Save practice session
     session_record = PracticeSession(

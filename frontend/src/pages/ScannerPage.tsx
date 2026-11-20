@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, Badge } from '../components/ui';
 import { useAppStore } from '../store/useAppStore';
 import { Upload, Copy, Check, Download, FileText, ScanLine, Feather } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
 export const ScannerPage: React.FC = () => {
   const { currentLang } = useAppStore();
@@ -27,7 +28,7 @@ export const ScannerPage: React.FC = () => {
   const processOCR = async (b64: string) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ocr/page', {
+      const res = await fetch(apiUrl('/api/ocr/page'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

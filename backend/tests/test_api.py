@@ -25,7 +25,7 @@ def test_metrics_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert "models" in data
-    assert len(data["models"]) >= 7
+    assert len(data["models"]) >= 4
 
 def test_leaderboard_endpoint():
     response = client.get("/api/leaderboard")

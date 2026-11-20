@@ -3,6 +3,7 @@ import { Card, Badge, Skeleton } from '../components/ui';
 import { useAppStore } from '../store/useAppStore';
 import { Cpu, Zap, Activity, ShieldCheck, Layers, BarChart2 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { apiUrl } from '../lib/api';
 
 export const DashboardPage: React.FC = () => {
   const { currentLang, theme } = useAppStore();
@@ -10,7 +11,7 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch('/api/metrics')
+    fetch(apiUrl('/api/metrics'))
       .then((res) => res.json())
       .then((data) => {
         setMetricsData(data);

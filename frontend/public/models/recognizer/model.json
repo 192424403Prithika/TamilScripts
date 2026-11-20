@@ -96,9 +96,7 @@
       "weights": [
         {
           "name": "temperature",
-          "shape": [
-            1
-          ],
+          "shape": [],
           "dtype": "float32"
         },
         {

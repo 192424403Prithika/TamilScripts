@@ -9,6 +9,7 @@ import {
   ProgressRing,
 } from '../components/ui';
 import { StrokePoint } from '../types';
+import { apiUrl } from '../lib/api';
 import { useAppStore } from '../store/useAppStore';
 import {
   Volume2,
@@ -79,7 +80,7 @@ export const RecognizePage: React.FC = () => {
       try {
         if (recMode === 'word' && wordMethod === 'whole_word') {
           // Whole-word continuous line endpoint
-          const res = await fetch('/api/recognize/line', {
+          const res = await fetch(apiUrl('/api/recognize/line'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image_base64: b64 }),
@@ -99,7 +100,7 @@ export const RecognizePage: React.FC = () => {
           }
         } else {
           // Single character endpoint (LightweightTamilRecognizer 95.16% accuracy)
-          const res = await fetch('/api/recognize/character', {
+          const res = await fetch(apiUrl('/api/recognize/character'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -130,7 +131,7 @@ export const RecognizePage: React.FC = () => {
 
     const t0 = performance.now();
     try {
-      const res = await fetch('/api/recognize/line', {
+      const res = await fetch(apiUrl('/api/recognize/line'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image_base64: sample.image_base64 }),
@@ -158,7 +159,7 @@ export const RecognizePage: React.FC = () => {
     if (!lastCanvasB64) return;
     setIsExplaining(true);
     try {
-      const res = await fetch('/api/explain', {
+      const res = await fetch(apiUrl('/api/explain'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image_base64: lastCanvasB64 }),

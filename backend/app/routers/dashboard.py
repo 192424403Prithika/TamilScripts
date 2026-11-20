@@ -63,76 +63,60 @@ def get_leaderboard(db: Session = Depends(get_db)):
 @router.get("/metrics")
 def get_model_metrics():
     """
-    Returns live operational performance metrics, confusion rate, and latencies.
+    Returns live operational performance metrics from real training and evaluation runs.
     """
+    import json
+    from pathlib import Path
+    
+    rec_metrics_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "runs" / "recognizer_metrics.json"
+    models = []
+    
+    if rec_metrics_path.exists():
+        with open(rec_metrics_path, "r", encoding="utf-8") as f:
+            rm = json.load(f)
+        models.append({
+            "name": "Lightweight Tamil Recognizer (SE-ResNet)",
+            "target_platform": "Client-Side (TF.js WebGL/WASM) + Server Fallback",
+            "test_top1_acc": round(rm.get("test_top1_accuracy", 0.0), 2),
+            "test_top5_acc": round(rm.get("test_top5_accuracy", 0.0), 2),
+            "user_test_top1_acc": round(rm.get("user_test_top1_accuracy", 0.0), 2),
+            "params": rm.get("param_count", 90652),
+            "status": "Trained & Exported"
+        })
+    else:
+        models.append({
+            "name": "Lightweight Tamil Recognizer (SE-ResNet)",
+            "status": "Model not trained yet"
+        })
+
+    # Generator status
+    ckpt_gen = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "generator_best.pt"
+    models.append({
+        "name": "Character Generator (Gate 1)",
+        "status": "Trained & Active" if ckpt_gen.exists() else "Model not trained yet",
+        "params": 1115968
+    })
+
+    # Synthesis status
+    ckpt_synth = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "synth_best.pt"
+    models.append({
+        "name": "Handwriting Synthesis MDN (Gate 2)",
+        "status": "Trained & Active" if ckpt_synth.exists() else "Model not trained yet",
+        "params": 968825
+    })
+
+    # Scorer status
+    ckpt_scorer = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "scorer_best.pt"
+    models.append({
+        "name": "Practice Coach Scorer (Gate 3)",
+        "status": "Trained & Active" if ckpt_scorer.exists() else "Model not trained yet",
+        "params": 1404484
+    })
+
     return {
-        "models": [
-            {
-                "name": "Model 1: Lightweight ResNet-SE (Browser/Edge)",
-                "target_platform": "Client-Side (TF.js WebGL/WASM) + Server Fallback",
-                "test_top1_acc": 95.8,
-                "test_top5_acc": 99.2,
-                "params": 90653,
-                "size_mb": 0.35,
-                "latency_p50_ms": 14.2,
-                "latency_p95_ms": 28.6
-            },
-            {
-                "name": "Model 2: BiLSTM Stroke-Sequence Recognizer",
-                "target_platform": "Server + Client Worker",
-                "test_top1_acc": 94.1,
-                "test_top5_acc": 98.6,
-                "params": 148220,
-                "size_mb": 0.58,
-                "latency_p50_ms": 18.5,
-                "latency_p95_ms": 34.0
-            },
-            {
-                "name": "Model 3: Conditional cGAN Character Generator",
-                "target_platform": "PyTorch / ONNX Runtime",
-                "fid_score": 14.6,
-                "recognizer_acc_on_generated": 92.4,
-                "size_mb": 4.1,
-                "latency_p50_ms": 42.0,
-                "latency_p95_ms": 68.0
-            },
-            {
-                "name": "Model 4: Graves-style Handwriting Synthesizer",
-                "target_platform": "Server RNN MDN",
-                "stroke_continuity_score": 96.2,
-                "size_mb": 3.8,
-                "latency_p50_ms": 32.0,
-                "latency_p95_ms": 55.0
-            },
-            {
-                "name": "Model 5: Siamese Quality Scorer",
-                "target_platform": "PyTorch / ONNX Runtime",
-                "correlation_with_human_graders": 0.91,
-                "size_mb": 1.9,
-                "latency_p50_ms": 16.4,
-                "latency_p95_ms": 29.5
-            },
-            {
-                "name": "Model 6: CRNN Word/Line Recognizer",
-                "target_platform": "Server PyTorch / ONNX Runtime",
-                "word_error_rate_pct": 4.2,
-                "char_error_rate_pct": 1.8,
-                "size_mb": 8.4,
-                "latency_p50_ms": 48.0,
-                "latency_p95_ms": 82.0
-            },
-            {
-                "name": "Model 7: Writer Style Encoder",
-                "target_platform": "Few-shot CNN Encoder",
-                "cosine_style_retention": 0.88,
-                "size_mb": 1.2,
-                "latency_p50_ms": 11.0,
-                "latency_p95_ms": 22.0
-            }
-        ],
+        "models": models,
         "summary": {
             "total_character_classes": 156,
-            "avg_client_prediction_ms": 24.5,
-            "hardware_conformance": "CPU & WebGL Real-time Verified (< 100 ms)"
+            "runtime_environment": "PyTorch CPU + ONNX Runtime / TF.js"
         }
     }

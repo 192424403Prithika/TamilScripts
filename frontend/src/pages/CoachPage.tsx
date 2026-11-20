@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DrawingCanvas } from '../components/DrawingCanvas';
 import { StrokePoint, QualityScoreResult } from '../types';
+import { apiUrl } from '../lib/api';
 import { useAppStore } from '../store/useAppStore';
 import { Button, Card, Badge, ProgressRing } from '../components/ui';
-import { Award, Flame, ArrowRight, RotateCcw, Volume2, CheckCircle2, Feather } from 'lucide-react';
+import { Award, Flame, ArrowRight, RotateCcw, Volume2, CheckCircle2, Feather, AlertCircle } from 'lucide-react';
 import { speakTamilText } from '../lib/speech';
 
 interface Lesson {
@@ -94,12 +95,28 @@ export const CoachPage: React.FC = () => {
   const [evaluating, setEvaluating] = useState<boolean>(false);
   const [showGhost, setShowGhost] = useState<boolean>(true);
   const [splashActive, setSplashActive] = useState<boolean>(false);
+  const [coachLatency, setCoachLatency] = useState<number | null>(null);
+  const [modelError, setModelError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(apiUrl('/api/coach/status'))
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.scorer_ready) {
+          setModelError("Model not trained yet");
+        }
+      })
+      .catch(() => {
+        setModelError("Model not trained yet");
+      });
+  }, []);
 
   const handleStrokeUpdate = async (strokes: StrokePoint[], b64: string) => {
     if (strokes.length < 5) return;
     setEvaluating(true);
+    const t0 = performance.now();
     try {
-      const res = await fetch('/api/score', {
+      const res = await fetch(apiUrl('/api/score'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,7 +126,10 @@ export const CoachPage: React.FC = () => {
       });
       if (res.ok) {
         const data: QualityScoreResult = await res.json();
+        const clientLatency = Math.round((performance.now() - t0) * 10) / 10;
         setScoreResult(data);
+        setCoachLatency(clientLatency);
+        setModelError(null);
 
         // Award XP & trigger ink-splash on passing score
         if (data.overall_score >= 75) {
@@ -117,9 +137,15 @@ export const CoachPage: React.FC = () => {
           setSplashActive(true);
           setTimeout(() => setSplashActive(false), 1400);
         }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setModelError(err.detail || "Model not trained yet");
+        setScoreResult(null);
       }
     } catch (e) {
       console.error("Coach scoring error:", e);
+      setModelError("Model not trained yet");
+      setScoreResult(null);
     } finally {
       setEvaluating(false);
     }
@@ -322,9 +348,16 @@ export const CoachPage: React.FC = () => {
         <div className="lg:col-span-5 space-y-4">
           <Card className="p-6 space-y-5">
             <div className="flex items-center justify-between border-b border-border-subtle pb-3">
-              <h2 className="text-sm font-semibold text-ink-primary uppercase tracking-wider font-sans">
-                AI Diagnostic Scorecard
-              </h2>
+              <div>
+                <h2 className="text-sm font-semibold text-ink-primary uppercase tracking-wider font-sans">
+                  AI Diagnostic Scorecard
+                </h2>
+                {coachLatency !== null && (
+                  <span className="font-mono text-[11px] text-ink-tertiary">
+                    Latency: {coachLatency.toFixed(1)} ms
+                  </span>
+                )}
+              </div>
               {scoreResult && (
                 <Badge variant={scoreResult.pass_status ? 'sage' : 'vermilion'}>
                   {scoreResult.pass_status ? 'Mastered' : 'In Practice'}
@@ -332,7 +365,15 @@ export const CoachPage: React.FC = () => {
               )}
             </div>
 
-            {scoreResult ? (
+            {modelError ? (
+              <div className="py-12 px-4 text-center text-ink-tertiary space-y-3">
+                <AlertCircle className="w-10 h-10 mx-auto text-amber-500" />
+                <p className="text-sm font-semibold text-ink-primary">Model not trained yet</p>
+                <p className="text-xs leading-relaxed max-w-xs mx-auto">
+                  Gate 3 Practice Coach Siamese model checkpoint (scorer_best.pt) is not trained yet.
+                </p>
+              </div>
+            ) : scoreResult ? (
               <div className="space-y-5">
                 {/* Main Progress Ring & Score */}
                 <div className="flex items-center justify-between p-4 rounded-xl bg-paper-muted border border-border-subtle">

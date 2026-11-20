@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Badge } from '../components/ui';
 import { useAppStore } from '../store/useAppStore';
 import { History, Calendar, Feather, Zap } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
 export const HistoryPage: React.FC = () => {
   const { currentLang } = useAppStore();
@@ -9,7 +10,7 @@ export const HistoryPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch('/api/history')
+    fetch(apiUrl('/api/history'))
       .then((res) => res.json())
       .then((data) => {
         setHistoryItems(data);

@@ -92,6 +92,7 @@ class RecognitionService:
         self.onnx_session = None
         self.stroke_session = None
         self.crnn_session = None
+        self.pytorch_model = None
         self.ctc_vocab = self._load_ctc_vocab()
         self.id_to_ctc_char = {v: k for k, v in self.ctc_vocab.items()}
         self._init_models()
@@ -128,9 +129,29 @@ class RecognitionService:
             if crnn_onnx.exists():
                 self.crnn_session = ort.InferenceSession(str(crnn_onnx), providers=['CPUExecutionProvider'])
                 print("[*] CRNN ONNX model loaded successfully in RecognitionService.")
-            print("[*] ONNX models loaded successfully in RecognitionService.")
+            if self.onnx_session is not None:
+                print("[*] ONNX models loaded successfully in RecognitionService.")
         except Exception as e:
             print(f"[!] Warning: Could not initialize ONNX models: {e}")
+
+        # PyTorch fallback if ONNX is not available or as secondary backup
+        try:
+            import torch
+            ckpt_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "recognizer_best.pt"
+            if not ckpt_path.exists():
+                ckpt_path = Path(settings.MODEL_DIR).parent.parent / "checkpoints" / "recognizer_best.pt"
+            if ckpt_path.exists():
+                models_dir = ckpt_path.parent.parent / "models"
+                if str(models_dir) not in sys.path:
+                    sys.path.insert(0, str(models_dir))
+                from recognizer import LightweightTamilRecognizer
+                pt_model = LightweightTamilRecognizer(num_classes=len(self.unicode_map))
+                pt_model.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
+                pt_model.eval()
+                self.pytorch_model = pt_model
+                print("[*] PyTorch recognition model loaded successfully as fallback.")
+        except Exception as e:
+            print(f"[!] Warning: PyTorch fallback could not be initialized: {e}")
 
     def render_strokes_to_image(self, strokes: List[StrokePoint], width: int = 560, height: int = 320) -> Image.Image:
         """Renders continuous strokes onto a high-contrast binary canvas."""
@@ -207,12 +228,17 @@ class RecognitionService:
         return np.expand_dims(np.expand_dims(norm_arr, 0), 0)
 
     def infer_single_glyph(self, input_tensor: np.ndarray, k: int = 5) -> List[Tuple[int, float]]:
-        """Runs preprocessed 1x1x64x64 tensor through ONNX ResNet-SE recognizer."""
-        if self.onnx_session is None:
-            raise RuntimeError("Model not loaded: ONNX character recognizer session is not initialized")
-
-        inp_name = self.onnx_session.get_inputs()[0].name
-        logits = self.onnx_session.run(None, {inp_name: input_tensor})[0][0]
+        """Runs preprocessed 1x1x64x64 tensor through ONNX or PyTorch ResNet-SE recognizer."""
+        if self.onnx_session is not None:
+            inp_name = self.onnx_session.get_inputs()[0].name
+            logits = self.onnx_session.run(None, {inp_name: input_tensor})[0][0]
+        elif self.pytorch_model is not None:
+            import torch
+            with torch.no_grad():
+                tensor_torch = torch.from_numpy(input_tensor).float()
+                logits = self.pytorch_model(tensor_torch).numpy()[0]
+        else:
+            raise RuntimeError("Model not loaded: character recognizer session is not initialized")
 
         exp_logits = np.exp(logits - np.max(logits))
         probs = exp_logits / np.sum(exp_logits)

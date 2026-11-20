@@ -54,6 +54,19 @@ def train_recognizer(config_path: str, epochs: int = None, quick: bool = False):
     y_test = torch.from_numpy(data["y_test"]).long()
 
     batch_size = cfg["training"]["batch_size"]
+
+    # User handwritten evaluation sets
+    has_user_val = "user_X_val" in data and len(data["user_X_val"]) > 0
+    has_user_test = "user_X_test" in data and len(data["user_X_test"]) > 0
+    if has_user_val:
+        user_X_val = torch.from_numpy(data["user_X_val"]).float()
+        user_y_val = torch.from_numpy(data["user_y_val"]).long()
+        user_val_loader = DataLoader(TensorDataset(user_X_val, user_y_val), batch_size=batch_size, shuffle=False)
+    if has_user_test:
+        user_X_test = torch.from_numpy(data["user_X_test"]).float()
+        user_y_test = torch.from_numpy(data["user_y_test"]).long()
+        user_test_loader = DataLoader(TensorDataset(user_X_test, user_y_test), batch_size=batch_size, shuffle=False)
+
     train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(TensorDataset(X_test, y_test), batch_size=batch_size, shuffle=False)
@@ -87,6 +100,7 @@ def train_recognizer(config_path: str, epochs: int = None, quick: bool = False):
             logits = model(bx)
             loss = criterion(logits, by)
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             running_loss += loss.item() * bx.size(0)
 
@@ -113,16 +127,36 @@ def train_recognizer(config_path: str, epochs: int = None, quick: bool = False):
         val_acc = (correct_top1 / len(val_loader.dataset)) * 100.0
         val_top5_acc = (correct_top5 / len(val_loader.dataset)) * 100.0
 
+        user_val_acc = 0.0
+        if has_user_val:
+            user_correct = 0
+            with torch.no_grad():
+                for bx, by in user_val_loader:
+                    bx, by = bx.to(device), by.to(device)
+                    logits = model(bx)
+                    preds = torch.argmax(logits, dim=-1)
+                    user_correct += (preds == by).sum().item()
+            user_val_acc = (user_correct / len(user_val_loader.dataset)) * 100.0
+
         history["train_loss"].append(train_loss)
         history["val_loss"].append(val_loss)
         history["val_acc"].append(val_acc)
         history["val_top5_acc"].append(val_top5_acc)
+        if has_user_val:
+            if "user_val_acc" not in history:
+                history["user_val_acc"] = []
+            history["user_val_acc"].append(user_val_acc)
 
-        print(f"Epoch [{epoch:02d}/{num_epochs:02d}] Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.2f}% | Top-5: {val_top5_acc:.2f}%", flush=True)
+        user_msg = f" | User Handwritten Val Acc: {user_val_acc:.2f}%" if has_user_val else ""
+        print(f"Epoch [{epoch:02d}/{num_epochs:02d}] Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.2f}% | Top-5: {val_top5_acc:.2f}%{user_msg}", flush=True)
 
         if val_acc >= best_val_acc:
             best_val_acc = val_acc
             torch.save(model.state_dict(), ckpt_dir / "recognizer_best.pt")
+
+    # Load best checkpoint for final evaluation
+    if (ckpt_dir / "recognizer_best.pt").exists():
+        model.load_state_dict(torch.load(ckpt_dir / "recognizer_best.pt", map_location=device))
 
     # Final Test evaluation
     model.eval()
@@ -138,7 +172,30 @@ def train_recognizer(config_path: str, epochs: int = None, quick: bool = False):
 
     test_acc = (test_top1 / len(test_loader.dataset)) * 100.0
     test_top5_acc = (test_top5 / len(test_loader.dataset)) * 100.0
-    print(f"\n[+] Final Test Evaluation -> Top-1 Acc: {test_acc:.2f}% | Top-5 Acc: {test_top5_acc:.2f}%")
+    print(f"\n[+] Final Overall Test Evaluation -> Top-1 Acc: {test_acc:.2f}% | Top-5 Acc: {test_top5_acc:.2f}%")
+
+    user_test_top1, user_test_top5 = 0.0, 0.0
+    user_test_details = []
+    if has_user_test:
+        u_correct1, u_correct5 = 0, 0
+        with torch.no_grad():
+            for bx, by in user_test_loader:
+                bx, by = bx.to(device), by.to(device)
+                logits = model(bx)
+                probs = F.softmax(logits, dim=-1)
+                top_probs, pred_top5 = torch.topk(probs, k=5, dim=-1)
+                u_correct1 += (pred_top5[:, 0] == by).sum().item()
+                u_correct5 += (pred_top5 == by.unsqueeze(1)).any(dim=-1).sum().item()
+                for i in range(len(by)):
+                    user_test_details.append({
+                        "true_id": int(by[i].item()),
+                        "pred_id": int(pred_top5[i, 0].item()),
+                        "confidence": float(top_probs[i, 0].item()),
+                        "is_correct": bool(pred_top5[i, 0].item() == by[i].item())
+                    })
+        user_test_top1 = (u_correct1 / len(user_test_loader.dataset)) * 100.0
+        user_test_top5 = (u_correct5 / len(user_test_loader.dataset)) * 100.0
+        print(f"[+] Final User Handwritten Test Evaluation -> Top-1 Acc: {user_test_top1:.2f}% | Top-5 Acc: {user_test_top5:.2f}% ({u_correct1}/{len(user_test_loader.dataset)} correctly recognized)")
 
     # Save metrics log
     metrics = {
@@ -148,12 +205,24 @@ def train_recognizer(config_path: str, epochs: int = None, quick: bool = False):
         "best_val_accuracy": best_val_acc,
         "test_top1_accuracy": test_acc,
         "test_top5_accuracy": test_top5_acc,
+        "user_test_top1_accuracy": user_test_top1,
+        "user_test_top5_accuracy": user_test_top5,
+        "user_test_details": user_test_details,
         "history": history
     }
     with open(runs_dir / "recognizer_metrics.json", "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2)
 
     print(f"[+] Saved model checkpoint to {ckpt_dir / 'recognizer_best.pt'}")
+
+    # Export models to ONNX
+    try:
+        sys.path.append(str(ML_DIR / "export"))
+        from to_onnx import export_all
+        export_all()
+    except Exception as e:
+        print(f"[!] Warning exporting ONNX: {e}")
+
     return model, metrics
 
 if __name__ == "__main__":
