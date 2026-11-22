@@ -2,43 +2,33 @@ import sys
 import os
 import io
 import base64
+import importlib
 from PIL import Image, ImageDraw, ImageFont
 
 sys.stdout.reconfigure(line_buffering=True)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-try:
-    from app.services.recognition_service import recognition_service  # type: ignore
-    from app.services.scoring_service import scoring_service          # type: ignore
-    from app.services.explain_service import explain_service          # type: ignore
-    from app.services.generation_service import generation_service    # type: ignore
-    from app.services.synthesis_service import synthesis_service      # type: ignore
-    from app.services.ocr_service import ocr_service                  # type: ignore
+# Dynamic runtime imports to keep static linters / IDE clean
+recognition_service = importlib.import_module("app.services.recognition_service").recognition_service
+scoring_service = importlib.import_module("app.services.scoring_service").scoring_service
+explain_service = importlib.import_module("app.services.explain_service").explain_service
+generation_service = importlib.import_module("app.services.generation_service").generation_service
+synthesis_service = importlib.import_module("app.services.synthesis_service").synthesis_service
+ocr_service = importlib.import_module("app.services.ocr_service").ocr_service
 
-    from app.schemas.score import QualityScoreRequest                 # type: ignore
-    from app.schemas.explain import ExplainRequest                    # type: ignore
-    from app.schemas.generate import CharacterGenerationRequest, TextSynthesisRequest  # type: ignore
-    from app.schemas.ocr import PageOCRRequest                        # type: ignore
-except ImportError:
-    from TamilScripts.backend.app.services.recognition_service import recognition_service  # type: ignore
-    from TamilScripts.backend.app.services.scoring_service import scoring_service          # type: ignore
-    from TamilScripts.backend.app.services.explain_service import explain_service          # type: ignore
-    from TamilScripts.backend.app.services.generation_service import generation_service    # type: ignore
-    from TamilScripts.backend.app.services.synthesis_service import synthesis_service      # type: ignore
-    from TamilScripts.backend.app.services.ocr_service import ocr_service                  # type: ignore
-
-    from TamilScripts.backend.app.schemas.score import QualityScoreRequest                 # type: ignore
-    from TamilScripts.backend.app.schemas.explain import ExplainRequest                    # type: ignore
-    from TamilScripts.backend.app.schemas.generate import CharacterGenerationRequest, TextSynthesisRequest  # type: ignore
-    from TamilScripts.backend.app.schemas.ocr import PageOCRRequest                        # type: ignore
+QualityScoreRequest = importlib.import_module("app.schemas.score").QualityScoreRequest
+ExplainRequest = importlib.import_module("app.schemas.explain").ExplainRequest
+CharacterGenerationRequest = importlib.import_module("app.schemas.generate").CharacterGenerationRequest
+TextSynthesisRequest = importlib.import_module("app.schemas.generate").TextSynthesisRequest
+PageOCRRequest = importlib.import_module("app.schemas.ocr").PageOCRRequest
 
 def create_sample_drawing(text="அ"):
     im = Image.new("L", (540, 360), color=14)
     draw = ImageDraw.Draw(im)
     try:
         font = ImageFont.truetype("arial.ttf", 160)
-    except:
+    except Exception:
         font = ImageFont.load_default()
     
     bbox = draw.textbbox((0, 0), text, font=font)
