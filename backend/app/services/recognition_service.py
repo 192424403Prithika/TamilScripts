@@ -194,17 +194,22 @@ class RecognitionService:
             img = ImageOps.invert(img)
         return img
 
+    def preprocess_image_base64(self, img_b64: str) -> np.ndarray:
+        """Helper to decode base64 image and return 1x1x64x64 float32 tensor."""
+        img = self.decode_image_base64(img_b64)
+        return self.preprocess_glyph_to_tensor(img)
+
     def preprocess_glyph_to_tensor(self, img: Image.Image) -> np.ndarray:
         """
         Shared standard preprocessing:
-        1. Find bounding box of ink (> 30).
+        1. Find bounding box of ink (> 50).
         2. Crop to ink bbox.
         3. Pad to square with 15% margin.
         4. Resize to 64x64 with Lanczos.
         5. Normalize to [0.0, 1.0].
         """
         arr = np.array(img, dtype=np.uint8)
-        y_indices, x_indices = np.where(arr > 30)
+        y_indices, x_indices = np.where(arr > 50)
         
         if len(y_indices) == 0 or len(x_indices) == 0:
             return np.zeros((1, 1, 64, 64), dtype=np.float32)
@@ -251,7 +256,7 @@ class RecognitionService:
 
         # Check for ink presence
         arr = np.array(img, dtype=np.uint8)
-        ink_count = int(np.sum(arr > 30))
+        ink_count = int(np.sum(arr > 50))
         if ink_count < 20:
             elapsed = round((time.perf_counter() - t0) * 1000.0, 2)
             return RecognitionResponse(
@@ -331,7 +336,7 @@ class RecognitionService:
 
     def segment_word_spans(self, img_np: np.ndarray) -> List[Tuple[int, int]]:
         """Segments horizontal word ink into individual character bounding spans."""
-        v_proj = np.sum(img_np > 30, axis=0)
+        v_proj = np.sum(img_np > 50, axis=0)
         spans = []
         in_span = False
         start_x = 0

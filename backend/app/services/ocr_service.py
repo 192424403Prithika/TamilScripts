@@ -8,7 +8,7 @@ import base64
 import io
 import time
 import numpy as np
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from typing import List
 from ..schemas.ocr import PageOCRRequest, PageOCRResponse, TextLineBox
 
@@ -38,33 +38,78 @@ class OCRService:
         lines: List[TextLineBox] = []
         full_text = ""
 
-        if self.ocr_engine is None:
-            raise RuntimeError("Model not loaded: RapidOCR neural engine is not initialized")
+        if self.ocr_engine is not None:
+            # Convert to RGB numpy array for RapidOCR
+            rgb_img = img.convert("RGB")
+            img_np = np.array(rgb_img)
+            result, _ = self.ocr_engine(img_np)
+            if result:
+                for idx, res_item in enumerate(result):
+                    box = res_item[0] # [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+                    text = str(res_item[1]).strip()
+                    conf = float(res_item[2])
+                    
+                    # Bounding box as [ymin, xmin, ymax, xmax]
+                    xs = [pt[0] for pt in box]
+                    ys = [pt[1] for pt in box]
+                    bbox = [int(min(ys)), int(min(xs)), int(max(ys)), int(max(xs))]
 
-        # Convert to RGB numpy array for RapidOCR
-        rgb_img = img.convert("RGB")
-        img_np = np.array(rgb_img)
+                    if text:
+                        lines.append(TextLineBox(
+                            line_index=idx + 1,
+                            bounding_box=bbox,
+                            line_text=text,
+                            confidence=round(conf, 4)
+                        ))
+        else:
+            # Native neural line recognizer fallback using CRNN / RecognitionService
+            from .recognition_service import recognition_service
+            arr = np.array(img)
+            if np.mean(arr) > 127:
+                inv_img = ImageOps.invert(img)
+            else:
+                inv_img = img
+            inv_arr = np.array(inv_img)
 
-        result, _ = self.ocr_engine(img_np)
+            # Horizontal projection profile for line detection
+            h_proj = np.sum(inv_arr > 50, axis=1)
+            line_spans = []
+            in_line = False
+            start_y = 0
+            for y, val in enumerate(h_proj):
+                if val > 0 and not in_line:
+                    in_line = True
+                    start_y = y
+                elif val == 0 and in_line:
+                    in_line = False
+                    if y - start_y >= 12:
+                        line_spans.append((start_y, y))
+            if in_line and len(h_proj) - start_y >= 12:
+                line_spans.append((start_y, len(h_proj)))
 
-        if result:
-            for idx, res_item in enumerate(result):
-                box = res_item[0] # [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
-                text = str(res_item[1]).strip()
-                conf = float(res_item[2])
+            if not line_spans:
+                line_spans = [(0, img.height)]
+
+            for idx, (y1, y2) in enumerate(line_spans):
+                pad_y = 4
+                cy1 = max(0, y1 - pad_y)
+                cy2 = min(img.height, y2 + pad_y)
+                line_cropped = inv_img.crop((0, cy1, img.width, cy2))
                 
-                # Bounding box as [ymin, xmin, ymax, xmax]
-                xs = [pt[0] for pt in box]
-                ys = [pt[1] for pt in box]
-                bbox = [int(min(ys)), int(min(xs)), int(max(ys)), int(max(xs))]
-
-                if text:
+                buf_line = io.BytesIO()
+                line_cropped.save(buf_line, format="PNG")
+                b64_line = "data:image/png;base64," + base64.b64encode(buf_line.getvalue()).decode("utf-8")
+                
+                line_res = recognition_service.recognize_line_or_word(b64_line)
+                if line_res.recognized_text:
                     lines.append(TextLineBox(
                         line_index=idx + 1,
-                        bounding_box=bbox,
-                        line_text=text,
-                        confidence=round(conf, 4)
+                        bounding_box=[cy1, 0, cy2, img.width],
+                        line_text=line_res.recognized_text,
+                        confidence=round(line_res.confidence, 4)
                     ))
+
+        if lines:
             full_text = "\n".join([l.line_text for l in lines])
 
         buf = io.BytesIO()

@@ -51,35 +51,8 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
     ctx.fillStyle = '#0F0E0D';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw ruled epigraphic calligraphy guidelines if enabled
-    if (guidelines) {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(245, 240, 230, 0.08)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-
-      // Baseline and meanline
-      const lineY1 = height * 0.35;
-      const lineY2 = height * 0.65;
-
-      ctx.beginPath();
-      ctx.moveTo(0, lineY1);
-      ctx.lineTo(width, lineY1);
-      ctx.moveTo(0, lineY2);
-      ctx.lineTo(width, lineY2);
-      ctx.stroke();
-
-      // Center vertical guide
-      ctx.beginPath();
-      ctx.moveTo(width / 2, 0);
-      ctx.lineTo(width / 2, height);
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
     setHistory([ctx.getImageData(0, 0, width, height)]);
-  }, [width, height, guidelines]);
+  }, [width, height]);
 
   useEffect(() => {
     initCanvas();
@@ -299,6 +272,16 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
           onTouchEnd={stopDrawing}
           className="w-full h-auto block cursor-crosshair touch-none"
         />
+        {guidelines && (
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox={`0 0 ${width} ${height}`}
+          >
+            <line x1="0" y1={height * 0.35} x2={width} y2={height * 0.35} stroke="rgba(245, 240, 230, 0.15)" strokeDasharray="4 4" strokeWidth="1" />
+            <line x1="0" y1={height * 0.65} x2={width} y2={height * 0.65} stroke="rgba(245, 240, 230, 0.15)" strokeDasharray="4 4" strokeWidth="1" />
+            <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="rgba(245, 240, 230, 0.15)" strokeDasharray="4 4" strokeWidth="1" />
+          </svg>
+        )}
       </div>
 
       {/* Floating Canvas Scribe Toolbar */}

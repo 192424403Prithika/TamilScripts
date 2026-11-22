@@ -73,17 +73,9 @@ class ScoringService:
         return self.model is not None and self.prototypes is not None
 
     def preprocess_image(self, b64_str: str) -> np.ndarray:
-        if "," in b64_str:
-            b64_str = b64_str.split(",")[1]
-        user_bytes = base64.b64decode(b64_str)
-        user_img = Image.open(io.BytesIO(user_bytes)).convert("L")
-        user_img = user_img.resize((64, 64), Image.Resampling.LANCZOS)
-        user_arr = np.array(user_img, dtype=np.float32) / 255.0
-
-        # Invert if user drawn on white canvas (white bg=1, dark stroke=0 -> ink=1, bg=0)
-        if np.mean(user_arr) > 0.5:
-            user_arr = 1.0 - user_arr
-        return user_arr
+        from .recognition_service import recognition_service
+        tensor = recognition_service.preprocess_image_base64(b64_str)
+        return tensor[0, 0]
 
     def score_drawing(self, req: QualityScoreRequest) -> QualityScoreResponse:
         if not self.is_ready():

@@ -19,7 +19,7 @@ class SqueezeExcitation(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         b, c, _, _ = x.shape
         w = F.adaptive_avg_pool2d(x, (1, 1)).view(b, c)
-        w = F.relu(self.fc1(w), inplace=True)
+        w = F.relu(self.fc1(w))
         w = torch.sigmoid(self.fc2(w)).view(b, c, 1, 1)
         return x * w
 
@@ -29,7 +29,7 @@ class DepthwiseSeparableConv(nn.Module):
         self.depthwise = nn.Conv2d(in_ch, in_ch, kernel_size=3, stride=stride, padding=1, groups=in_ch, bias=False)
         self.pointwise = nn.Conv2d(in_ch, out_ch, kernel_size=1, bias=False)
         self.bn = nn.BatchNorm2d(out_ch)
-        self.act = nn.SiLU(inplace=True)
+        self.act = nn.SiLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.depthwise(x)
@@ -65,7 +65,7 @@ class LightweightTamilRecognizer(nn.Module):
         self.stem = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=3, stride=2, padding=1, bias=False),  # 32x32
             nn.BatchNorm2d(32),
-            nn.SiLU(inplace=True),
+            nn.SiLU(),
         )
 
         # Stage 1 (32 channels)

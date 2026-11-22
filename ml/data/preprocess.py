@@ -27,7 +27,7 @@ def preprocess_glyph_image(img: Image.Image, target_size: int = 64, margin_ratio
         arr = np.array(img, dtype=np.uint8)
 
     # Threshold ink pixels
-    y_indices, x_indices = np.where(arr > 30)
+    y_indices, x_indices = np.where(arr > 50)
     if len(y_indices) == 0 or len(x_indices) == 0:
         return np.zeros((target_size, target_size), dtype=np.float32)
 

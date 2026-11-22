@@ -7,12 +7,12 @@ model:
 
 training:
   batch_size: 64
-  epochs: 30
+  epochs: 25
   quick_epochs: 5
   lr: 0.001
   min_lr: 0.00001
-  weight_decay: 0.01
-  label_smoothing: 0.1
+  weight_decay: 0.001
+  label_smoothing: 0.08
   optimizer: AdamW
   scheduler: CosineAnnealingLR
   mixed_precision: true

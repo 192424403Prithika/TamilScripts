@@ -14,6 +14,11 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+DATA_DIR = Path(__file__).resolve().parent
+if str(DATA_DIR) not in sys.path:
+    sys.path.insert(0, str(DATA_DIR))
+
 from augment import TamilDataAugmentor
 from preprocess import preprocess_glyph_image
 
@@ -164,6 +169,12 @@ def prepare_dataset(samples_per_class: int = 40):
         # 1. Train split
         if has_user_train:
             raw_train_imgs = user_train_by_class[cid]
+            # Add canonical base glyph
+            arr_base = preprocess_glyph_image(base_glyph, target_size=64)
+            train_images.append(arr_base)
+            train_labels.append(cid)
+            train_strokes.append(glyph_to_synthetic_strokes(base_glyph))
+
             # Add all originals
             for im in raw_train_imgs:
                 arr = preprocess_glyph_image(im, target_size=64)

@@ -43,7 +43,7 @@ export function preprocessCanvasToFloat32Array(
     }
   }
 
-  // 2. Find bounding box of ink pixels (> 30)
+  // 2. Find bounding box of ink pixels (> 50)
   let minX = width;
   let maxX = -1;
   let minY = height;
@@ -51,7 +51,7 @@ export function preprocessCanvasToFloat32Array(
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (gray[y * width + x] > 30) {
+      if (gray[y * width + x] > 50) {
         if (x < minX) minX = x;
         if (x > maxX) maxX = x;
         if (y < minY) minY = y;
