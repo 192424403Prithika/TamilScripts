@@ -9,6 +9,12 @@ from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from typing import List, Union
 
+def _get_default_model_dir() -> str:
+    local_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../models/saved_models"))
+    if os.path.exists(local_dir):
+        return local_dir
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../ml/export/saved_models"))
+
 class Settings(BaseSettings):
     APP_NAME: str = "TamilScript AI"
     APP_VERSION: str = "1.0.0"
@@ -46,7 +52,7 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v
     
-    MODEL_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../ml/export/saved_models"))
+    MODEL_DIR: str = _get_default_model_dir()
 
     class Config:
         env_file = ".env"

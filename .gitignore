@@ -15,14 +15,19 @@ venv/
 ENV/
 
 # PyTorch checkpoints and raw datasets
-*.pt
 *.pth
-*.onnx
-!ml/export/saved_models/*.onnx
 ml/data/raw/
 ml/data/processed/
 ml/runs/
-ml/checkpoints/
+*.pt
+*.onnx
+*.onnx.data
+!backend/app/models/checkpoints/*.pt
+!backend/app/models/saved_models/*.onnx
+!backend/app/models/saved_models/*.onnx.data
+!ml/checkpoints/*.pt
+!ml/export/saved_models/*.onnx
+!ml/export/saved_models/*.onnx.data
 
 # Node / Frontend
 node_modules/

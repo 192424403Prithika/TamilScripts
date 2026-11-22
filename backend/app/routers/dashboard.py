@@ -90,7 +90,10 @@ def get_model_metrics():
         })
 
     # Generator status
-    ckpt_gen = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "generator_best.pt"
+    ckpt_dir = Path(__file__).resolve().parent.parent / "models" / "checkpoints"
+    ml_ckpt_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints"
+    
+    ckpt_gen = ckpt_dir / "generator_best.pt" if (ckpt_dir / "generator_best.pt").exists() else ml_ckpt_dir / "generator_best.pt"
     models.append({
         "name": "Character Generator (Gate 1)",
         "status": "Trained & Active" if ckpt_gen.exists() else "Model not trained yet",
@@ -98,7 +101,7 @@ def get_model_metrics():
     })
 
     # Synthesis status
-    ckpt_synth = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "synth_best.pt"
+    ckpt_synth = ckpt_dir / "synth_best.pt" if (ckpt_dir / "synth_best.pt").exists() else ml_ckpt_dir / "synth_best.pt"
     models.append({
         "name": "Handwriting Synthesis MDN (Gate 2)",
         "status": "Trained & Active" if ckpt_synth.exists() else "Model not trained yet",
@@ -106,7 +109,7 @@ def get_model_metrics():
     })
 
     # Scorer status
-    ckpt_scorer = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "scorer_best.pt"
+    ckpt_scorer = ckpt_dir / "scorer_best.pt" if (ckpt_dir / "scorer_best.pt").exists() else ml_ckpt_dir / "scorer_best.pt"
     models.append({
         "name": "Practice Coach Scorer (Gate 3)",
         "status": "Trained & Active" if ckpt_scorer.exists() else "Model not trained yet",

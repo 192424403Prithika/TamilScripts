@@ -30,15 +30,23 @@ class SynthesisService:
     def _load_models(self):
         try:
             import torch
-            ml_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml"
-            models_dir = ml_dir / "models"
-            if str(models_dir) not in sys.path:
-                sys.path.insert(0, str(models_dir))
+            ckpt_dir = Path(__file__).resolve().parent.parent / "models" / "checkpoints"
+            if not ckpt_dir.exists():
+                ckpt_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints"
+            
+            try:
+                from ..ml_models.generator import ConditionalGenerator
+                from ..ml_models.synth import HandwritingSynthesisMDN
+            except (ImportError, ValueError):
+                models_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "models"
+                if str(models_dir) not in sys.path:
+                    sys.path.insert(0, str(models_dir))
+                from generator import ConditionalGenerator
+                from synth import HandwritingSynthesisMDN
 
             # 1. Load Gate 1 Character Generator (Glyph-composition mode)
-            gen_ckpt = ml_dir / "checkpoints" / "generator_best.pt"
+            gen_ckpt = ckpt_dir / "generator_best.pt"
             if gen_ckpt.exists():
-                from generator import ConditionalGenerator
                 gen = ConditionalGenerator(num_classes=len(self.unicode_map))
                 gen.load_state_dict(torch.load(gen_ckpt, map_location="cpu"))
                 gen.eval()
@@ -46,9 +54,8 @@ class SynthesisService:
                 print("[*] SynthesisService: Loaded trained Character Generator.")
 
             # 2. Load Gate 2 MDN Model
-            synth_ckpt = ml_dir / "checkpoints" / "synth_best.pt"
+            synth_ckpt = ckpt_dir / "synth_best.pt"
             if synth_ckpt.exists():
-                from synth import HandwritingSynthesisMDN
                 m = HandwritingSynthesisMDN(num_chars=len(self.unicode_map))
                 m.load_state_dict(torch.load(synth_ckpt, map_location="cpu"))
                 m.eval()

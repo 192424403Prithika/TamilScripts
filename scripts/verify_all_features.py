@@ -8,17 +8,30 @@ sys.stdout.reconfigure(line_buffering=True)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.services.recognition_service import recognition_service
-from app.services.scoring_service import scoring_service
-from app.services.explain_service import explain_service
-from app.services.generation_service import generation_service
-from app.services.synthesis_service import synthesis_service
-from app.services.ocr_service import ocr_service
+try:
+    from app.services.recognition_service import recognition_service  # type: ignore
+    from app.services.scoring_service import scoring_service          # type: ignore
+    from app.services.explain_service import explain_service          # type: ignore
+    from app.services.generation_service import generation_service    # type: ignore
+    from app.services.synthesis_service import synthesis_service      # type: ignore
+    from app.services.ocr_service import ocr_service                  # type: ignore
 
-from app.schemas.score import QualityScoreRequest
-from app.schemas.explain import ExplainRequest
-from app.schemas.generate import CharacterGenerationRequest, TextSynthesisRequest
-from app.schemas.ocr import PageOCRRequest
+    from app.schemas.score import QualityScoreRequest                 # type: ignore
+    from app.schemas.explain import ExplainRequest                    # type: ignore
+    from app.schemas.generate import CharacterGenerationRequest, TextSynthesisRequest  # type: ignore
+    from app.schemas.ocr import PageOCRRequest                        # type: ignore
+except ImportError:
+    from TamilScripts.backend.app.services.recognition_service import recognition_service  # type: ignore
+    from TamilScripts.backend.app.services.scoring_service import scoring_service          # type: ignore
+    from TamilScripts.backend.app.services.explain_service import explain_service          # type: ignore
+    from TamilScripts.backend.app.services.generation_service import generation_service    # type: ignore
+    from TamilScripts.backend.app.services.synthesis_service import synthesis_service      # type: ignore
+    from TamilScripts.backend.app.services.ocr_service import ocr_service                  # type: ignore
+
+    from TamilScripts.backend.app.schemas.score import QualityScoreRequest                 # type: ignore
+    from TamilScripts.backend.app.schemas.explain import ExplainRequest                    # type: ignore
+    from TamilScripts.backend.app.schemas.generate import CharacterGenerationRequest, TextSynthesisRequest  # type: ignore
+    from TamilScripts.backend.app.schemas.ocr import PageOCRRequest                        # type: ignore
 
 def create_sample_drawing(text="அ"):
     im = Image.new("L", (540, 360), color=14)

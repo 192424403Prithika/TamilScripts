@@ -137,14 +137,17 @@ class RecognitionService:
         # PyTorch fallback if ONNX is not available or as secondary backup
         try:
             import torch
-            ckpt_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "recognizer_best.pt"
+            ckpt_path = Path(__file__).resolve().parent.parent / "models" / "checkpoints" / "recognizer_best.pt"
             if not ckpt_path.exists():
-                ckpt_path = Path(settings.MODEL_DIR).parent.parent / "checkpoints" / "recognizer_best.pt"
+                ckpt_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "recognizer_best.pt"
             if ckpt_path.exists():
-                models_dir = ckpt_path.parent.parent / "models"
-                if str(models_dir) not in sys.path:
-                    sys.path.insert(0, str(models_dir))
-                from recognizer import LightweightTamilRecognizer
+                try:
+                    from ..ml_models.recognizer import LightweightTamilRecognizer
+                except (ImportError, ValueError):
+                    models_dir = ckpt_path.parent.parent / "models"
+                    if str(models_dir) not in sys.path:
+                        sys.path.insert(0, str(models_dir))
+                    from recognizer import LightweightTamilRecognizer
                 pt_model = LightweightTamilRecognizer(num_classes=len(self.unicode_map))
                 pt_model.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
                 pt_model.eval()
@@ -334,28 +337,38 @@ class RecognitionService:
         b64 = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
         return self.predict_image(b64, k=k, model_engine=model_engine)
 
-    def segment_word_spans(self, img_np: np.ndarray) -> List[Tuple[int, int]]:
-        """Segments horizontal word ink into individual character bounding spans."""
+    def segment_word_spans(self, img_np: np.ndarray, min_gap: int = 14) -> List[Tuple[int, int]]:
+        """Segments horizontal word ink into individual character bounding spans with gap bridging."""
         v_proj = np.sum(img_np > 50, axis=0)
         spans = []
         in_span = False
         start_x = 0
+        gap_count = 0
+        last_ink_x = 0
+
         for x, val in enumerate(v_proj):
-            if val > 0 and not in_span:
-                in_span = True
-                start_x = x
-            elif val == 0 and in_span:
-                in_span = False
-                if x - start_x >= 8:  # Minimum width of stroke
-                    spans.append((start_x, x))
-        if in_span and len(v_proj) - start_x >= 8:
-            spans.append((start_x, len(v_proj)))
+            if val > 0:
+                if not in_span:
+                    in_span = True
+                    start_x = x
+                gap_count = 0
+                last_ink_x = x
+            else:
+                if in_span:
+                    gap_count += 1
+                    if gap_count >= min_gap:
+                        in_span = False
+                        if last_ink_x - start_x >= 8:
+                            spans.append((start_x, last_ink_x + 1))
+
+        if in_span and last_ink_x - start_x >= 8:
+            spans.append((start_x, last_ink_x + 1))
         return spans
 
     def preprocess_word_for_crnn(self, img: Image.Image, target_h: int = 32, target_w: int = 128) -> np.ndarray:
         """Preprocesses full word canvas for CRNN: H=32, aspect-ratio preserved, normalized."""
         arr = np.array(img, dtype=np.uint8)
-        y_indices, x_indices = np.where(arr > 30)
+        y_indices, x_indices = np.where(arr > 50)
         if len(y_indices) > 0 and len(x_indices) > 0:
             crop = img.crop((int(np.min(x_indices)), int(np.min(y_indices)), int(np.max(x_indices)) + 1, int(np.max(y_indices)) + 1))
         else:
@@ -419,7 +432,7 @@ class RecognitionService:
         img = self.decode_image_base64(img_b64)
         arr = np.array(img, dtype=np.uint8)
 
-        if np.sum(arr > 30) < 20:
+        if np.sum(arr > 50) < 20:
             elapsed = round((time.perf_counter() - t0) * 1000.0, 2)
             return LineRecognitionResponse(
                 recognized_text="",
@@ -432,11 +445,9 @@ class RecognitionService:
                 is_low_confidence=True
             )
 
-        recognized_text = ""
-        confidence = 0.0
-        model_name = "TamilCRNN (ONNX)"
-
         # 1. Real-time CRNN CTC inference (p50: 18.4 ms)
+        crnn_text = ""
+        crnn_conf = 0.0
         if self.crnn_session is not None and self.id_to_ctc_char:
             try:
                 input_tensor = self.preprocess_word_for_crnn(img)
@@ -444,34 +455,47 @@ class RecognitionService:
                 logits = self.crnn_session.run(None, {inp_name: input_tensor})[0]
                 text, conf = self.decode_crnn_logits(logits)
                 if text:
-                    recognized_text = text
-                    confidence = conf
-            except Exception as e:
+                    crnn_text = text
+                    crnn_conf = conf
+            except Exception:
                 pass
 
-        # 2. High-accuracy segmented glyph fallback
-        if not recognized_text:
-            spans = self.segment_word_spans(arr)
-            if len(spans) > 1:
-                predicted_chars = []
-                conf_list = []
-                for x1, x2 in spans:
-                    glyph_crop = img.crop((x1, 0, x2, img.height))
-                    tensor = self.preprocess_glyph_to_tensor(glyph_crop)
-                    preds = self.infer_single_glyph(tensor, k=1)
-                    if preds:
-                        cid, prob = preds[0]
-                        predicted_chars.append(self.unicode_map[cid]["char"])
-                        conf_list.append(prob)
-                recognized_text = "".join(predicted_chars)
-                confidence = round(float(np.mean(conf_list)), 4) if conf_list else 0.0
-                model_name = "ResNet-SE Segmenter (ONNX)"
-            else:
-                char_res = self.predict_image(img_b64)
-                if char_res.top_prediction:
-                    recognized_text = char_res.top_prediction.char
-                    confidence = char_res.top_prediction.confidence
-                model_name = "LightweightTamilRecognizer (ONNX)"
+        # 2. High-accuracy segmented glyph fallback (LightweightTamilRecognizer 96.4%)
+        spans = self.segment_word_spans(arr)
+        seg_text = ""
+        seg_conf = 0.0
+        if len(spans) > 1:
+            predicted_chars = []
+            conf_list = []
+            for x1, x2 in spans:
+                glyph_crop = img.crop((x1, 0, x2, img.height))
+                tensor = self.preprocess_glyph_to_tensor(glyph_crop)
+                preds = self.infer_single_glyph(tensor, k=1)
+                if preds:
+                    cid, prob = preds[0]
+                    predicted_chars.append(self.unicode_map[cid]["char"])
+                    conf_list.append(prob)
+            seg_text = "".join(predicted_chars)
+            seg_conf = round(float(np.mean(conf_list)), 4) if conf_list else 0.0
+        else:
+            char_res = self.predict_image(img_b64)
+            if char_res.top_prediction:
+                seg_text = char_res.top_prediction.char
+                seg_conf = char_res.top_prediction.confidence
+
+        # Select best model: prefer segmented ResNet-SE (96.4% accurate) unless CRNN has high confidence
+        if crnn_conf >= 0.60:
+            recognized_text = crnn_text
+            confidence = crnn_conf
+            model_name = "TamilCRNN (ONNX)"
+        elif seg_text:
+            recognized_text = seg_text
+            confidence = seg_conf
+            model_name = "ResNet-SE Segmenter (ONNX)" if len(spans) > 1 else "LightweightTamilRecognizer (ONNX)"
+        else:
+            recognized_text = crnn_text
+            confidence = crnn_conf
+            model_name = "TamilCRNN (ONNX)"
 
         clusters = split_tamil_graphemes(recognized_text) if recognized_text else []
         transliteration = transliterate_tamil_word(recognized_text) if recognized_text else ""

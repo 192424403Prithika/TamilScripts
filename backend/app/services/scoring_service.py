@@ -31,17 +31,25 @@ class ScoringService:
     def _load_models(self):
         try:
             import torch
-            ml_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml"
-            models_dir = ml_dir / "models"
-            if str(models_dir) not in sys.path:
-                sys.path.insert(0, str(models_dir))
+            ckpt_dir = Path(__file__).resolve().parent.parent / "models" / "checkpoints"
+            if not ckpt_dir.exists():
+                ckpt_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints"
+            
+            try:
+                from ..ml_models.scorer import QualityScorerCNN
+                from ..ml_models.recognizer import LightweightTamilRecognizer
+            except (ImportError, ValueError):
+                models_dir = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "models"
+                if str(models_dir) not in sys.path:
+                    sys.path.insert(0, str(models_dir))
+                from scorer import QualityScorerCNN
+                from recognizer import LightweightTamilRecognizer
 
             # 1. Load Quality Scorer
-            ckpt_path = ml_dir / "checkpoints" / "scorer_best.pt"
-            proto_path = ml_dir / "checkpoints" / "prototype_bank.pt"
+            ckpt_path = ckpt_dir / "scorer_best.pt"
+            proto_path = ckpt_dir / "prototype_bank.pt"
 
             if ckpt_path.exists() and proto_path.exists():
-                from scorer import QualityScorerCNN
                 m = QualityScorerCNN(emb_dim=128)
                 m.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
                 m.eval()
@@ -53,9 +61,8 @@ class ScoringService:
                 self.prototypes = None
 
             # 2. Load Recognizer for confusion diagnosis
-            rec_ckpt = ml_dir / "checkpoints" / "recognizer_best.pt"
+            rec_ckpt = ckpt_dir / "recognizer_best.pt"
             if rec_ckpt.exists():
-                from recognizer import LightweightTamilRecognizer
                 rec = LightweightTamilRecognizer(num_classes=len(self.unicode_map))
                 rec.load_state_dict(torch.load(rec_ckpt, map_location="cpu"))
                 rec.eval()

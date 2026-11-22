@@ -30,12 +30,17 @@ class GenerationService:
     def _load_model(self):
         try:
             import torch
-            ckpt_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "generator_best.pt"
+            ckpt_path = Path(__file__).resolve().parent.parent / "models" / "checkpoints" / "generator_best.pt"
+            if not ckpt_path.exists():
+                ckpt_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "checkpoints" / "generator_best.pt"
             if ckpt_path.exists():
-                models_dir = ckpt_path.parent.parent / "models"
-                if str(models_dir) not in sys.path:
-                    sys.path.insert(0, str(models_dir))
-                from generator import ConditionalGenerator
+                try:
+                    from ..ml_models.generator import ConditionalGenerator
+                except (ImportError, ValueError):
+                    models_dir = ckpt_path.parent.parent / "models"
+                    if str(models_dir) not in sys.path:
+                        sys.path.insert(0, str(models_dir))
+                    from generator import ConditionalGenerator
                 gen = ConditionalGenerator(num_classes=len(self.unicode_map))
                 gen.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
                 gen.eval()
