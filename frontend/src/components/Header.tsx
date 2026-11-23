@@ -39,17 +39,20 @@ export const Header: React.FC = () => {
       {/* Center Nav Links (matching reference site header) */}
       <nav className="hidden lg:flex items-center gap-1">
         {[
-          { id: 'chart', label: 'Letters Chart' },
+          { id: 'chart', label: '247 Letters' },
+          { id: 'courses', label: 'Courses' },
+          { id: 'resources', label: 'Verbs & Vocab' },
           { id: 'speak', label: 'Speak' },
           { id: 'games', label: 'Games' },
-          { id: 'coach', label: 'Writing Coach' },
           { id: 'recognize', label: 'AI Studio' },
+          { id: 'testimonials', label: 'Reviews' },
+          { id: 'faq', label: 'FAQ' },
         ].map((item) => (
           <button
             key={item.id}
             type="button"
             onClick={() => setActiveTab(item.id)}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-ink-secondary hover:text-ink-primary hover:bg-paper-muted transition-colors"
+            className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-ink-secondary hover:text-ink-primary hover:bg-paper-muted transition-colors"
           >
             {item.label}
           </button>
@@ -58,6 +61,14 @@ export const Header: React.FC = () => {
 
       {/* Right Controls: Streak, Language, Theme, Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Book Free Demo CTA */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('contact')}
+          className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-vermilion hover:bg-vermilion-hover text-white text-xs font-bold shadow-sm transition-all active:scale-95"
+        >
+          <span>Book Free Demo</span>
+        </button>
         {/* Streak indicator */}
         <div
           className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-paper-muted border border-border-subtle text-xs font-mono font-medium text-ink-secondary"

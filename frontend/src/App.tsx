@@ -8,6 +8,13 @@ import { Home } from './pages/Home';
 import { LettersChartPage } from './pages/LettersChartPage';
 import { SpeakPage } from './pages/SpeakPage';
 import { LetterGamesPage } from './pages/LetterGamesPage';
+import { CoursesPage } from './pages/CoursesPage';
+import { ResourcesPage } from './pages/ResourcesPage';
+import { TestimonialsPage } from './pages/TestimonialsPage';
+import { FaqPage } from './pages/FaqPage';
+import { ContactPage } from './pages/ContactPage';
+import { AchievementsPage } from './pages/AchievementsPage';
+import { LegalPages } from './pages/LegalPages';
 import { RecognizePage } from './pages/RecognizePage';
 import { GeneratePage } from './pages/GeneratePage';
 import { SynthesisPage } from './pages/SynthesisPage';
@@ -33,6 +40,20 @@ export const App: React.FC = () => {
         return <SpeakPage />;
       case 'games':
         return <LetterGamesPage />;
+      case 'courses':
+        return <CoursesPage />;
+      case 'resources':
+        return <ResourcesPage />;
+      case 'testimonials':
+        return <TestimonialsPage />;
+      case 'faq':
+        return <FaqPage />;
+      case 'contact':
+        return <ContactPage />;
+      case 'achievements':
+        return <AchievementsPage />;
+      case 'legal':
+        return <LegalPages />;
       case 'recognize':
         return <RecognizePage />;
       case 'generate':
