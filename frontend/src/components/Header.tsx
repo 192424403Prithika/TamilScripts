@@ -31,10 +31,30 @@ export const Header: React.FC = () => {
           </span>
         </button>
 
-        <span className="hidden md:inline-block text-xs font-serif-tamil text-ink-secondary italic">
+        <span className="hidden xl:inline-block text-xs font-serif-tamil text-ink-secondary italic">
           Classical Epigraphy &amp; Neural Calligraphy Studio
         </span>
       </div>
+
+      {/* Center Nav Links (matching reference site header) */}
+      <nav className="hidden lg:flex items-center gap-1">
+        {[
+          { id: 'chart', label: 'Letters Chart' },
+          { id: 'speak', label: 'Speak' },
+          { id: 'games', label: 'Games' },
+          { id: 'coach', label: 'Writing Coach' },
+          { id: 'recognize', label: 'AI Studio' },
+        ].map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setActiveTab(item.id)}
+            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-ink-secondary hover:text-ink-primary hover:bg-paper-muted transition-colors"
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
 
       {/* Right Controls: Streak, Language, Theme, Profile */}
       <div className="flex items-center gap-2 sm:gap-3">

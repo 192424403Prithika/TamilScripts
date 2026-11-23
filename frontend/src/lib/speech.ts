@@ -1,35 +1,35 @@
 /**
- * Web Speech API Voice synthesizer with fallback for Tamil (ta-IN)
+ * Web Speech API helper for Tamil Text-to-Speech (ta-IN).
+ * Falls back gracefully if speech synthesis is not supported.
  */
 
-export function speakTamilText(text: string, rate: number = 0.9): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (!('speechSynthesis' in window)) {
-      console.warn("Speech synthesis not supported in this browser.");
+export function speakTamil(text: string, rate: number = 0.85): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
       resolve();
       return;
     }
 
-    window.speechSynthesis.cancel(); // Stop any pending speech
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ta-IN';
+      utterance.rate = rate;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "ta-IN";
-    utterance.rate = rate;
-    utterance.pitch = 1.0;
+      const voices = window.speechSynthesis.getVoices();
+      const taVoice = voices.find((v) => v.lang.toLowerCase().includes('ta'));
+      if (taVoice) {
+        utterance.voice = taVoice;
+      }
 
-    // Look for dedicated Tamil voice if present
-    const voices = window.speechSynthesis.getVoices();
-    const tamilVoice = voices.find(v => v.lang.includes("ta") || v.lang.includes("TAM"));
-    if (tamilVoice) {
-      utterance.voice = tamilVoice;
-    }
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
 
-    utterance.onend = () => resolve();
-    utterance.onerror = (e) => {
-      console.warn("Speech error:", e);
+      window.speechSynthesis.speak(utterance);
+    } catch {
       resolve();
-    };
-
-    window.speechSynthesis.speak(utterance);
+    }
   });
 }
+
+export const speakTamilText = speakTamil;

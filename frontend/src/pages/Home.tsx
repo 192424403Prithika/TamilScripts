@@ -1,404 +1,515 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../store/useAppStore';
-import { Card, Button, Badge } from '../components/ui';
 import {
   PenTool,
   Sparkles,
-  Edit3,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
-  BookOpen,
-  Play,
-  Pause,
   Volume2,
-  VolumeX,
+  ArrowRight,
+  BookOpen,
+  MessageSquare,
+  Trophy,
+  CheckCircle2,
+  HelpCircle,
+  MessageCircle,
+  Mail,
+  GraduationCap,
+  Layers,
+  ChevronDown,
 } from 'lucide-react';
+import { speakTamil } from '../lib/speech';
 
 export const Home: React.FC = () => {
-  const { setActiveTab, currentLang } = useAppStore();
+  const { setActiveTab } = useAppStore();
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const isTa = currentLang === 'ta';
+  const previewVowels = [
+    { ta: 'அ', say: 'a', word: 'அணில்', emoji: '🐿️' },
+    { ta: 'ஆ', say: 'aa', word: 'ஆடு', emoji: '🐐' },
+    { ta: 'இ', say: 'i', word: 'இலை', emoji: '🍃' },
+    { ta: 'ஈ', say: 'ii', word: 'ஈட்டி', emoji: '🗡️' },
+    { ta: 'உ', say: 'u', word: 'உரல்', emoji: '🥣' },
+    { ta: 'ஊ', say: 'uu', word: 'ஊஞ்சல்', emoji: '🪑' },
+  ];
 
-  // Video Animation State from workspace folder
-  const [activeScene, setActiveScene] = useState<'scene1' | 'scene2' | 'scene3' | 'vector'>('scene1');
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [isMuted, setIsMuted] = useState<boolean>(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    const nextMuted = !isMuted;
-    videoRef.current.muted = nextMuted;
-    setIsMuted(nextMuted);
-  };
+  const faqs = [
+    {
+      q: 'How many letters are in the Tamil alphabet chart?',
+      a: 'The Tamil alphabet has 247 letters in total: 12 Vowels (உயிர் எழுத்துக்கள்), 18 Consonants (மெய் எழுத்துக்கள்), 216 Vowel-Consonant combinations (உயிர்மெய் எழுத்துக்கள்), and 1 Special letter (ஆய்த எழுத்து: ஃ).',
+    },
+    {
+      q: 'How does the interactive audio pronunciation work?',
+      a: 'Each letter and phrase card uses the browser-native Web Speech API configured with Tamil (ta-IN) speech synthesis. Simply tap any letter or phrase to hear its authentic native pronunciation without needing heavy audio downloads.',
+    },
+    {
+      q: 'How does the TamilScript AI handwriting recognition work?',
+      a: 'Our AI engine uses a custom Squeeze-and-Excitation ResNet trained on real handwritten datasets with 96.4% accuracy. It runs client-side in your browser using ONNX Runtime / TensorFlow.js with sub-50ms latency.',
+    },
+    {
+      q: 'Is this platform free to use?',
+      a: 'Yes! The complete 247 letters chart, sound pronunciations, interactive letter games, conversational phrasebook, and neural AI handwriting recognition are 100% free and open for all learners.',
+    },
+  ];
 
   return (
-    <div className="space-y-16 py-6 max-w-5xl mx-auto select-none">
+    <div className="space-y-20 py-6 max-w-6xl mx-auto px-4 select-none">
       {/* ========================================================
-          HERO SECTION
+          1. HERO SECTION
          ======================================================== */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
-        {/* Left Hero Content */}
-        <div className="lg:col-span-7 space-y-6">
-          <Badge variant="vermilion">
-            {isTa ? 'தூய நரம்பியல் தொழில்நுட்பம்' : 'Classical Epigraphy Meets Deep Learning'}
-          </Badge>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ink-primary font-serif-tamil tracking-tight leading-[1.15]">
-            {isTa
-              ? 'தமிழ் கையெழுத்தின் நரம்பியல் கலைக்கூடம்'
-              : 'The Art & Epigraphy of Handwritten Tamil.'}
-          </h1>
-
-          <p className="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans max-w-xl">
-            {isTa
-              ? 'உலாவியிலேயே உடனடியாக இயங்கும் ஆழ்கற்றல் கையெழுத்து அறிதல், தொடர் உருவாக்கம் மற்றும் பயிற்சி தளம்.'
-              : 'Real-time deep learning recognition running client-side in under 50ms, neural stroke synthesis, and interactive calligraphy coaching.'}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button
-              variant="primary"
-              size="lg"
-              leftIcon={<PenTool className="w-5 h-5" />}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-              onClick={() => setActiveTab('recognize')}
-            >
-              {isTa ? 'எழுதத் தொடங்குங்கள்' : 'Start Writing'}
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              leftIcon={<BookOpen className="w-4 h-4" />}
-              onClick={() => setActiveTab('coach')}
-            >
-              {isTa ? 'பயிற்சி செய்க' : 'Practice Coach'}
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-6 pt-3 text-xs text-ink-tertiary font-mono">
-            <div className="flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-vermilion" />
-              <span>&lt; 50ms Latency</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-sage" />
-              <span>95.16% Test Accuracy</span>
-            </div>
-          </div>
+      <section className="text-center space-y-6 pt-4 max-w-4xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-vermilion/10 text-vermilion border border-vermilion/20 text-xs font-semibold">
+          <Sparkles className="w-4 h-4" />
+          <span>Interactive 247 Letters Chart · Native Audio · Neural AI Studio</span>
         </div>
 
-        {/* Right Hero: Active Studio Video Animation from Folder */}
-        <div className="lg:col-span-5 flex flex-col items-center">
-          <Card padding="none" className="w-full relative overflow-hidden bg-paper-surface border-border-strong shadow-paper-lg">
-            {/* Video Player Container */}
-            <div className="relative aspect-video w-full bg-paper-canvas flex items-center justify-center overflow-hidden border-b border-border-subtle group">
-              {activeScene !== 'vector' ? (
-                <div className="relative w-full h-full">
-                  <video
-                    ref={videoRef}
-                    key={activeScene}
-                    src={`/videos/${activeScene}.mp4`}
-                    autoPlay
-                    loop
-                    muted={isMuted}
-                    playsInline
-                    className="w-full h-full object-cover select-none"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                  />
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-ink-primary font-serif-tamil tracking-tight leading-[1.15]">
+          Tamil Alphabet Chart, Sounds &amp; AI Writing Studio
+        </h1>
 
-                  {/* Video Overlay Controls (Play/Pause & Sound) */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3 z-10">
-                    <button
-                      type="button"
-                      onClick={togglePlay}
-                      className="px-2.5 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-xs font-medium hover:bg-black/80 transition-all flex items-center gap-1.5"
-                    >
-                      {isPlaying ? (
-                        <>
-                          <Pause className="w-3.5 h-3.5 fill-white" />
-                          <span>Pause</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3.5 h-3.5 fill-white" />
-                          <span>Play</span>
-                        </>
-                      )}
-                    </button>
+        <p className="text-base sm:text-xl text-ink-secondary leading-relaxed font-sans max-w-2xl mx-auto">
+          Explore all 247 letters with instant speech audio, master secondary vowel signs, play interactive letter games, and practice writing with real-time deep learning feedback.
+        </p>
 
-                    <button
-                      type="button"
-                      onClick={toggleMute}
-                      className="p-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white hover:bg-black/80 transition-all"
-                      title={isMuted ? 'Unmute video audio' : 'Mute video audio'}
-                    >
-                      {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Animated Ink Drawing of Tamil Letter 'அ' */
-                <div className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-paper-surface to-paper-muted">
-                  <svg
-                    viewBox="0 0 200 200"
-                    className="w-40 h-40 filter drop-shadow-sm"
-                    aria-label="Animated Tamil letter 'அ' drawing itself"
-                  >
-                    <circle cx="100" cy="100" r="90" fill="none" stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray="3 3" />
-                    <line x1="20" y1="100" x2="180" y2="100" stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray="2 2" />
+        {/* Quick Badges */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+          {['12 Vowels (உயிர்)', '18 Consonants (மெய்)', '216 Syllables (உயிர்மெய்)', 'Web Speech (ta-IN)', '96.4% Neural AI'].map((b, i) => (
+            <span key={i} className="px-3 py-1 rounded-full bg-paper-surface border border-border-subtle text-xs font-medium text-ink-secondary">
+              {b}
+            </span>
+          ))}
+        </div>
 
-                    <motion.path
-                      d="M 65 75 C 65 60, 95 60, 95 75 C 95 95, 60 100, 60 115 C 60 135, 95 135, 110 120 C 125 105, 135 75, 155 75 M 105 118 L 155 118 M 155 60 L 155 145"
-                      fill="none"
-                      stroke="var(--ink-primary)"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      initial={{ pathLength: 0, opacity: 0.2 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 2.8,
-                        repeat: Infinity,
-                        repeatType: 'loop',
-                        ease: 'easeInOut',
-                        repeatDelay: 1.2,
-                      }}
-                    />
-                    <motion.circle
-                      cx="155"
-                      cy="60"
-                      r="4"
-                      fill="var(--vermilion)"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: [0, 1.4, 1] }}
-                      transition={{ duration: 0.6, delay: 2.2, repeat: Infinity, repeatDelay: 3.4 }}
-                    />
-                  </svg>
-                  <div className="mt-1 text-center">
-                    <span className="font-mono text-[10px] text-ink-tertiary uppercase tracking-wider block">
-                      Vector Scribe Simulation
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
+        {/* Action CTAs */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+          <button
+            onClick={() => setActiveTab('chart')}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-vermilion hover:bg-vermilion-hover text-white text-sm font-semibold shadow-lg shadow-vermilion/25 transition-all hover:scale-105 active:scale-95"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Explore 247 Letters Chart</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
 
-            {/* Scene Selector Strip (Scene 1, Scene 2, Scene 3, Vector) */}
-            <div className="p-2.5 bg-paper-surface border-t border-border-subtle flex items-center justify-between gap-1 overflow-x-auto text-xs">
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setActiveScene('scene1')}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition-all ${
-                    activeScene === 'scene1'
-                      ? 'bg-vermilion text-white font-bold shadow-paper-sm'
-                      : 'bg-paper-muted text-ink-secondary hover:text-ink-primary'
-                  }`}
-                >
-                  Scene 1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveScene('scene2')}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition-all ${
-                    activeScene === 'scene2'
-                      ? 'bg-vermilion text-white font-bold shadow-paper-sm'
-                      : 'bg-paper-muted text-ink-secondary hover:text-ink-primary'
-                  }`}
-                >
-                  Scene 2
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveScene('scene3')}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition-all ${
-                    activeScene === 'scene3'
-                      ? 'bg-vermilion text-white font-bold shadow-paper-sm'
-                      : 'bg-paper-muted text-ink-secondary hover:text-ink-primary'
-                  }`}
-                >
-                  Scene 3
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveScene('vector')}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition-all ${
-                    activeScene === 'vector'
-                      ? 'bg-vermilion text-white font-bold shadow-paper-sm'
-                      : 'bg-paper-muted text-ink-secondary hover:text-ink-primary'
-                  }`}
-                >
-                  Vector
-                </button>
-              </div>
+          <button
+            onClick={() => setActiveTab('games')}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-paper-surface hover:bg-paper-muted text-ink-primary border border-border-subtle text-sm font-semibold shadow-sm transition-all hover:scale-105 active:scale-95"
+          >
+            <Trophy className="w-4 h-4 text-gold" />
+            <span>Play Letter Games</span>
+          </button>
 
-              <span className="font-mono text-[10px] text-sage font-semibold flex items-center gap-1 flex-shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-sage animate-ping" />
-                Live Video
-              </span>
-            </div>
-          </Card>
+          <button
+            onClick={() => setActiveTab('recognize')}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-paper-surface hover:bg-paper-muted text-ink-primary border border-border-subtle text-sm font-semibold shadow-sm transition-all hover:scale-105 active:scale-95"
+          >
+            <PenTool className="w-4 h-4 text-vermilion" />
+            <span>AI Handwriting Studio</span>
+          </button>
         </div>
       </section>
 
       {/* ========================================================
-          THREE EDITORIAL FEATURE CARDS
+          2. THE LETTER CHART PREVIEW SECTION
+         ======================================================== */}
+      <section className="space-y-6 p-6 sm:p-10 rounded-3xl bg-paper-surface border border-border-subtle shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-6">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-vermilion uppercase tracking-wider">
+              <Layers className="w-3.5 h-3.5" />
+              <span>The Letter Chart · தமிழ் நெடுங்கணக்கு</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold font-serif-tamil text-ink-primary">
+              All 247 Tamil Letters with Sounds
+            </h2>
+            <p className="text-xs sm:text-sm text-ink-secondary">
+              Tap any letter card to hear native pronunciation.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setActiveTab('chart')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-vermilion/10 hover:bg-vermilion/20 text-vermilion text-xs font-bold transition-all"
+          >
+            <span>View Full 247 Grid</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Sample Letters preview */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+          {previewVowels.map((v, i) => (
+            <div
+              key={i}
+              onClick={() => speakTamil(v.ta)}
+              className="p-4 rounded-2xl bg-paper-muted border border-border-subtle hover:border-vermilion/50 hover:shadow-md transition-all cursor-pointer group text-center flex flex-col items-center justify-between min-h-[130px]"
+            >
+              <div className="w-full flex items-center justify-between text-ink-tertiary text-xs">
+                <span className="font-mono">{v.say}</span>
+                <Volume2 className="w-3.5 h-3.5 group-hover:text-vermilion" />
+              </div>
+              <div className="text-4xl font-extrabold font-serif-tamil text-ink-primary my-1 group-hover:scale-110 transition-transform">
+                {v.ta}
+              </div>
+              <p className="text-xs font-semibold text-ink-secondary">{v.word} {v.emoji}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================
+          3. HOW LETTERS JOIN (SIGN RULES)
          ======================================================== */}
       <section className="space-y-6">
-        <div className="border-b border-border-subtle pb-3 flex items-center justify-between">
-          <h2 className="text-xl font-bold font-serif-tamil text-ink-primary">
-            {isTa ? 'முக்கிய நரம்பியல் பிரிவுகள்' : 'Core Neural Systems'}
+        <div className="text-center space-y-2 max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-serif-tamil text-ink-primary">
+            How Letters Join (எழுத்துக்கள் இணையும் முறை)
           </h2>
-          <span className="text-xs text-ink-tertiary font-mono">01 — 03</span>
+          <p className="text-xs sm:text-sm text-ink-secondary">
+            When a pure consonant (மெய்) joins a vowel (உயிர்), it sheds its dot and takes a vowel sign to create an Uyirmei syllable.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { sign: 'No sign (Base)', vowel: 'அ (a)', math: 'க் + அ = க', desc: 'Pulli dot vanishes' },
+            { sign: 'Kaal sign (ா)', vowel: 'ஆ (aa)', math: 'க் + ஆ = கா', desc: 'Adds vertical leg kaal' },
+            { sign: 'Curl on top (ி)', vowel: 'இ (i)', math: 'க் + இ = கி', desc: 'Adds top hook curl' },
+            { sign: 'Kombu in front (ெ)', vowel: 'எ (e)', math: 'க் + எ = கெ', desc: 'Adds front loop kombu' },
+          ].map((item, idx) => (
+            <div key={idx} className="p-4 rounded-2xl bg-paper-surface border border-border-subtle shadow-sm space-y-2">
+              <span className="text-[11px] font-bold text-vermilion uppercase">{item.sign}</span>
+              <div className="text-xl font-extrabold font-serif-tamil text-ink-primary">
+                {item.math}
+              </div>
+              <p className="text-xs text-ink-tertiary">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================
+          4. INTERACTIVE MODULES: SPEAK, GAMES, WRITE
+         ======================================================== */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Module 1: Speak Everyday Tamil */}
+        <div
+          onClick={() => setActiveTab('speak')}
+          className="p-6 rounded-3xl bg-paper-surface border border-border-subtle hover:border-vermilion/50 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div className="space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+              <MessageSquare className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold font-serif-tamil text-ink-primary group-hover:text-vermilion transition-colors">
+              Speak Spoken Tamil
+            </h3>
+            <p className="text-xs text-ink-secondary leading-relaxed">
+              Everyday greetings (வணக்கம்), essential travel phrases, family words, and conversational sentences with instant native audio playback.
+            </p>
+          </div>
+          <div className="pt-4 flex items-center gap-1.5 text-xs font-bold text-vermilion">
+            <span>Learn Phrases</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+
+        {/* Module 2: Letter Games */}
+        <div
+          onClick={() => setActiveTab('games')}
+          className="p-6 rounded-3xl bg-paper-surface border border-border-subtle hover:border-vermilion/50 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div className="space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+              <Trophy className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold font-serif-tamil text-ink-primary group-hover:text-vermilion transition-colors">
+              Letter Games &amp; Quizzes
+            </h3>
+            <p className="text-xs text-ink-secondary leading-relaxed">
+              Listen to the sound and tap the matching letter, solve letter combination equations, maintain your streak, and earn XP.
+            </p>
+          </div>
+          <div className="pt-4 flex items-center gap-1.5 text-xs font-bold text-vermilion">
+            <span>Play Games</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+
+        {/* Module 3: Trace & Write Canvas */}
+        <div
+          onClick={() => setActiveTab('coach')}
+          className="p-6 rounded-3xl bg-paper-surface border border-border-subtle hover:border-vermilion/50 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div className="space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <PenTool className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold font-serif-tamil text-ink-primary group-hover:text-vermilion transition-colors">
+              ✏️ Trace &amp; Write Coach
+            </h3>
+            <p className="text-xs text-ink-secondary leading-relaxed">
+              Guided stroke tracing with ghost lines, instant Siamese neural quality scoring, proportions feedback, and curve evaluation.
+            </p>
+          </div>
+          <div className="pt-4 flex items-center gap-1.5 text-xs font-bold text-vermilion">
+            <span>Practice Writing</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          5. TAMILSCRIPT AI STUDIO SUITE
+         ======================================================== */}
+      <section className="space-y-6 p-6 sm:p-10 rounded-3xl bg-paper-surface border border-border-subtle shadow-sm">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-vermilion uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Deep Learning Suite · நரம்பியல் ஆய்வகம்</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-serif-tamil text-ink-primary">
+            TamilScript AI Deep Learning Suite
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-secondary">
+            Advanced neural networks powering real-time epigraphic inference, stroke generation, and document OCR.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              tab: 'recognize',
+              title: 'Character Recognition',
+              sub: '96.4% Acc · Sub-50ms SE-ResNet',
+              desc: 'Draw any letter on canvas for instantaneous deep learning recognition and Grad-CAM saliency heatmaps.',
+            },
+            {
+              tab: 'generate',
+              title: 'Neural Glyph Generator',
+              sub: 'Conditional VAE / Generator',
+              desc: 'Synthesize novel calligraphic letter variations conditioned on latent seeds, pressure, and slant.',
+            },
+            {
+              tab: 'synthesis',
+              title: 'Text-to-Handwriting',
+              sub: 'MDN Stroke Trajectories',
+              desc: 'Type any Tamil text and watch realistic handwriting render with cubic Bezier curves in real time.',
+            },
+            {
+              tab: 'scanner',
+              title: 'Manuscript Page OCR',
+              sub: 'Multi-line Neural Segmentation',
+              desc: 'Upload palm-leaf scans or handwritten document photographs for automatic line segmentation and text extraction.',
+            },
+          ].map((feat, idx) => (
+            <div
+              key={idx}
+              onClick={() => setActiveTab(feat.tab)}
+              className="p-5 rounded-2xl bg-paper-muted border border-border-subtle hover:border-vermilion/50 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono font-bold text-vermilion">{feat.sub}</span>
+                <h4 className="font-bold text-sm text-ink-primary group-hover:text-vermilion transition-colors font-serif-tamil">
+                  {feat.title}
+                </h4>
+                <p className="text-xs text-ink-tertiary leading-relaxed">{feat.desc}</p>
+              </div>
+              <div className="pt-3 flex items-center gap-1 text-[11px] font-semibold text-vermilion">
+                <span>Open Tool</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================
+          6. COURSE CARDS
+         ======================================================== */}
+      <section className="space-y-6">
+        <div className="text-center space-y-2 max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-serif-tamil text-ink-primary">
+            Curated Learning Paths (பாடப்பிரிவுகள்)
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-secondary">
+            Structured modules designed for beginners, children, diaspora learners, and calligraphy enthusiasts.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Live Recognition */}
-          <Card
-            interactive
-            onClick={() => setActiveTab('recognize')}
-            className="flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-vermilion-subtle text-vermilion flex items-center justify-center">
-                <PenTool className="w-5 h-5" />
+          {[
+            {
+              title: 'Simple Spoken Tamil',
+              badge: 'Beginner',
+              desc: 'Master daily spoken conversations, listening comprehension, polite expressions, and everyday sentence construction.',
+              features: ['Native speech audio', '100+ daily phrases', 'Practical dialogues'],
+            },
+            {
+              title: 'Tamil Reading & Writing',
+              badge: 'Comprehensive',
+              desc: 'Learn to read and write all 247 letters, master the 7 vowel sign rules, and compose words effortlessly.',
+              features: ['Complete 247 chart', 'Interactive tracing', 'Syllable math equations'],
+            },
+            {
+              title: 'Classical Epigraphy & AI',
+              badge: 'Advanced',
+              desc: 'Explore ancient Tamil Brahmi and Vatteluttu script traditions paired with modern neural handwriting models.',
+              features: ['Palm-leaf OCR', 'Deep learning coaching', 'Calligraphy synthesis'],
+            },
+          ].map((course, idx) => (
+            <div key={idx} className="p-6 rounded-3xl bg-paper-surface border border-border-subtle shadow-sm space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <span className="px-2.5 py-1 rounded-full bg-vermilion/10 text-vermilion text-[10px] font-bold uppercase">
+                  {course.badge}
+                </span>
+                <h3 className="text-lg font-bold font-serif-tamil text-ink-primary">
+                  {course.title}
+                </h3>
+                <p className="text-xs text-ink-secondary leading-relaxed">{course.desc}</p>
+                <ul className="space-y-1.5 pt-2">
+                  {course.features.map((f, fi) => (
+                    <li key={fi} className="flex items-center gap-2 text-xs text-ink-tertiary">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <Badge variant="vermilion">Sub-50ms TF.js &amp; ONNX</Badge>
-              <h3 className="text-lg font-bold font-serif-tamil text-ink-primary">
-                {isTa ? 'நேரடி கையெழுத்து அறிதல்' : 'Live In-Browser Recognition'}
-              </h3>
-              <p className="text-xs text-ink-secondary leading-relaxed">
-                {isTa
-                  ? 'உலாவியில் விரல் அல்லது பேனாவால் எழுதும்போது உடனுக்குடன் 95.16% துல்லியத்துடன் கண்டறிதல்.'
-                  : 'Draw on the ruled canvas with pressure-aware ink to receive instant predictions with calibrated confidence and grapheme segmentation.'}
-              </p>
-            </div>
-            <div className="pt-3 border-t border-border-subtle flex items-center text-xs font-semibold text-vermilion">
-              <span>{isTa ? 'தொடங்க' : 'Launch Studio'}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1" />
-            </div>
-          </Card>
 
-          {/* Card 2: Handwriting Synthesis */}
-          <Card
-            interactive
-            onClick={() => setActiveTab('synthesis')}
-            className="flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-subtle text-gold flex items-center justify-center">
-                <Edit3 className="w-5 h-5" />
-              </div>
-              <Badge variant="gold">LSTM-MDN Synthesis</Badge>
-              <h3 className="text-lg font-bold font-serif-tamil text-ink-primary">
-                {isTa ? 'கையெழுத்து உருவாக்கம்' : 'Neural Handwriting Synthesis'}
-              </h3>
-              <p className="text-xs text-ink-secondary leading-relaxed">
-                {isTa
-                  ? 'தட்டச்சு செய்த சொற்களை இயல்பான தமிழ் கையெழுத்து அசைவுகளாகவும் SVG கோடுகளாகவும் மாற்றுதல்.'
-                  : 'Convert typed Tamil text into realistic continuous cursive handwriting rendered with animated SVG pressure strokes.'}
-              </p>
+              <button
+                onClick={() => setActiveTab('chart')}
+                className="w-full py-2.5 rounded-xl bg-paper-muted hover:bg-vermilion hover:text-white text-ink-primary text-xs font-semibold border border-border-subtle transition-all"
+              >
+                Start Learning
+              </button>
             </div>
-            <div className="pt-3 border-t border-border-subtle flex items-center text-xs font-semibold text-gold">
-              <span>{isTa ? 'எழுதுக' : 'Write Sentences'}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1" />
-            </div>
-          </Card>
-
-          {/* Card 3: Calligraphic Practice Coach */}
-          <Card
-            interactive
-            onClick={() => setActiveTab('coach')}
-            className="flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-sage-subtle text-sage flex items-center justify-center">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <Badge variant="sage">Siamese Stroke Evaluator</Badge>
-              <h3 className="text-lg font-bold font-serif-tamil text-ink-primary">
-                {isTa ? 'கையெழுத்துப் பயிற்சி ஆசான்' : 'Calligraphy Practice Coach'}
-              </h3>
-              <p className="text-xs text-ink-secondary leading-relaxed">
-                {isTa
-                  ? 'கட்டமைப்பு வழிகாட்டி மீது எழுதி வடிவம், வளைவுகள் மற்றும் விகிதங்களை மதிப்பிடும் ஆசான்.'
-                  : 'Trace animated ghost strokes to master classical proportions, receiving instant scores on loop closure, curvature, and stability.'}
-              </p>
-            </div>
-            <div className="pt-3 border-t border-border-subtle flex items-center text-xs font-semibold text-sage">
-              <span>{isTa ? 'பயில்க' : 'Start Practice'}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1" />
-            </div>
-          </Card>
+          ))}
         </div>
       </section>
 
       {/* ========================================================
-          HOW IT WORKS STRIP
+          7. FAQ ACCORDION
          ======================================================== */}
-      <section className="p-6 rounded-2xl bg-paper-surface border border-border-subtle space-y-6">
-        <div className="text-center max-w-md mx-auto space-y-1">
-          <span className="text-xs font-mono uppercase tracking-wider text-ink-tertiary">
-            System Pipeline
-          </span>
-          <h3 className="text-xl font-bold font-serif-tamil text-ink-primary">
-            {isTa ? 'செயல்முறை எவ்வாறு இயங்குகிறது?' : 'How Epigraphic AI Works'}
-          </h3>
+      <section className="space-y-6 max-w-3xl mx-auto">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-serif-tamil text-ink-primary">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-secondary">
+            Everything you need to know about learning Tamil and using TamilScript AI.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 rounded-full bg-paper-muted border border-border-strong text-ink-primary font-mono font-bold text-xs flex items-center justify-center mx-auto">
-              1
-            </div>
-            <h4 className="font-bold text-sm text-ink-primary">
-              {isTa ? 'கோடுகளை வரைதல்' : 'Continuous Stroke Capture'}
-            </h4>
-            <p className="text-xs text-ink-secondary leading-relaxed">
-              Pressure-sensitive coordinates are sampled at 60 FPS onto the ruled calligraphy surface.
-            </p>
-          </div>
-
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 rounded-full bg-paper-muted border border-border-strong text-ink-primary font-mono font-bold text-xs flex items-center justify-center mx-auto">
-              2
-            </div>
-            <h4 className="font-bold text-sm text-ink-primary">
-              {isTa ? 'நரம்பியல் குறியாக்கம்' : 'Neural Feature Extraction'}
-            </h4>
-            <p className="text-xs text-ink-secondary leading-relaxed">
-              ResNet-SE &amp; CRNN extract stroke topology, loops, and temporal sequences in &lt;20ms.
-            </p>
-          </div>
-
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 rounded-full bg-paper-muted border border-border-strong text-ink-primary font-mono font-bold text-xs flex items-center justify-center mx-auto">
-              3
-            </div>
-            <h4 className="font-bold text-sm text-ink-primary">
-              {isTa ? 'யுனிகோட் வெளியீடு' : 'Calibrated Unicode Decode'}
-            </h4>
-            <p className="text-xs text-ink-secondary leading-relaxed">
-              Tamil grapheme clusters are decoded with calibrated sequence confidence and speech synthesis.
-            </p>
-          </div>
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div
+                key={idx}
+                className="rounded-2xl bg-paper-surface border border-border-subtle overflow-hidden transition-all"
+              >
+                <button
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 font-semibold text-sm text-ink-primary hover:text-vermilion transition-colors"
+                >
+                  <span>{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-ink-tertiary transition-transform duration-200 ${isOpen ? 'rotate-180 text-vermilion' : ''}`} />
+                </button>
+                {isOpen && (
+                  <div className="px-5 pb-4 text-xs sm:text-sm text-ink-secondary leading-relaxed border-t border-border-subtle/50 pt-3">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
+
+      {/* ========================================================
+          8. CONTACT & REACH YOUR GOALS SECTION
+         ======================================================== */}
+      <section className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-paper-surface via-paper-surface to-vermilion/5 border border-border-subtle shadow-md text-center space-y-6">
+        <div className="space-y-2 max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-4xl font-extrabold font-serif-tamil text-ink-primary">
+            Let’s Reach Your Goals Together
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-secondary">
+            Have questions about learning Tamil or need custom assistance? Reach out to us directly on WhatsApp or email.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <a
+            href="https://wa.me/919035394805?text=Hello%20TamilScript%20AI%20Team!%20I%20would%20like%20to%20learn%20Tamil."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md transition-all hover:scale-105 active:scale-95"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>Chat on WhatsApp (+91 90353 94805)</span>
+          </a>
+
+          <a
+            href="mailto:support@tamilscript.ai"
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-paper-surface hover:bg-paper-muted text-ink-primary border border-border-subtle text-xs sm:text-sm font-semibold shadow-sm transition-all hover:scale-105 active:scale-95"
+          >
+            <Mail className="w-4 h-4 text-vermilion" />
+            <span>support@tamilscript.ai</span>
+          </a>
+        </div>
+      </section>
+
+      {/* ========================================================
+          9. FOOTER
+         ======================================================== */}
+      <footer className="border-t border-border-subtle pt-10 pb-6 text-xs text-ink-tertiary space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-ink-primary font-bold text-sm">
+              <div className="w-6 h-6 rounded-lg bg-vermilion text-white flex items-center justify-center font-serif-tamil text-sm">
+                அ
+              </div>
+              <span>TamilScript AI</span>
+            </div>
+            <p className="text-[11px] leading-relaxed">
+              Classical Tamil Epigraphy Meets Real-Time Neural Intelligence. Master reading, speaking, and writing with interactive deep learning.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <span className="font-bold text-ink-secondary uppercase text-[10px] tracking-wider">Learning Modules</span>
+            <ul className="space-y-1">
+              <li><button onClick={() => setActiveTab('chart')} className="hover:text-vermilion">247 Alphabet Chart</button></li>
+              <li><button onClick={() => setActiveTab('speak')} className="hover:text-vermilion">Spoken Phrases</button></li>
+              <li><button onClick={() => setActiveTab('games')} className="hover:text-vermilion">Letter Games</button></li>
+              <li><button onClick={() => setActiveTab('coach')} className="hover:text-vermilion">Writing Coach</button></li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <span className="font-bold text-ink-secondary uppercase text-[10px] tracking-wider">AI Studio</span>
+            <ul className="space-y-1">
+              <li><button onClick={() => setActiveTab('recognize')} className="hover:text-vermilion">Character Recognition</button></li>
+              <li><button onClick={() => setActiveTab('generate')} className="hover:text-vermilion">Glyph Generator</button></li>
+              <li><button onClick={() => setActiveTab('synthesis')} className="hover:text-vermilion">Handwriting Synthesis</button></li>
+              <li><button onClick={() => setActiveTab('scanner')} className="hover:text-vermilion">Manuscript Scanner</button></li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <span className="font-bold text-ink-secondary uppercase text-[10px] tracking-wider">Contact &amp; Support</span>
+            <p className="text-[11px]">Bangalore, Karnataka, India</p>
+            <p className="text-[11px]">WhatsApp: +91 90353 94805</p>
+            <p className="text-[11px]">Email: support@tamilscript.ai</p>
+          </div>
+        </div>
+
+        <div className="border-t border-border-subtle/50 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px]">
+          <span>© 2026 TamilScript AI. All rights reserved.</span>
+          <span>Designed with pure deep learning and accessible client-side speech synthesis.</span>
+        </div>
+      </footer>
     </div>
   );
 };

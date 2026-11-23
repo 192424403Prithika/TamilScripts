@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../store/useAppStore';
-import { PenTool, Sparkles, Edit3, GraduationCap, LayoutDashboard } from 'lucide-react';
+import { Home as HomeIcon, Grid, MessageSquare, Trophy, PenTool } from 'lucide-react';
 
 interface MobileTab {
   id: string;
@@ -10,11 +10,11 @@ interface MobileTab {
 }
 
 const mobileTabs: MobileTab[] = [
-  { id: 'recognize', labelEn: 'Recognize', labelTa: 'அறிதல்', icon: PenTool },
-  { id: 'generate', labelEn: 'Generate', labelTa: 'உருவாக்கு', icon: Sparkles },
-  { id: 'synthesis', labelEn: 'Write', labelTa: 'எழுது', icon: Edit3 },
-  { id: 'coach', labelEn: 'Practice', labelTa: 'பயிற்சி', icon: GraduationCap },
-  { id: 'dashboard', labelEn: 'Dashboard', labelTa: 'பலகை', icon: LayoutDashboard },
+  { id: 'home', labelEn: 'Home', labelTa: 'முகப்பு', icon: HomeIcon },
+  { id: 'chart', labelEn: '247 Chart', labelTa: 'எழுத்துக்கள்', icon: Grid },
+  { id: 'speak', labelEn: 'Speak', labelTa: 'பேசு', icon: MessageSquare },
+  { id: 'games', labelEn: 'Games', labelTa: 'விளையாட்டு', icon: Trophy },
+  { id: 'recognize', labelEn: 'AI Studio', labelTa: 'ஆய்வகம்', icon: PenTool },
 ];
 
 export const BottomNav: React.FC = () => {

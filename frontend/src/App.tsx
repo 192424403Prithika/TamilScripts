@@ -5,6 +5,9 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { Home } from './pages/Home';
+import { LettersChartPage } from './pages/LettersChartPage';
+import { SpeakPage } from './pages/SpeakPage';
+import { LetterGamesPage } from './pages/LetterGamesPage';
 import { RecognizePage } from './pages/RecognizePage';
 import { GeneratePage } from './pages/GeneratePage';
 import { SynthesisPage } from './pages/SynthesisPage';
@@ -24,6 +27,12 @@ export const App: React.FC = () => {
     switch (activeTab) {
       case 'home':
         return <Home />;
+      case 'chart':
+        return <LettersChartPage />;
+      case 'speak':
+        return <SpeakPage />;
+      case 'games':
+        return <LetterGamesPage />;
       case 'recognize':
         return <RecognizePage />;
       case 'generate':

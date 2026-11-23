@@ -13,6 +13,9 @@ import {
   Palette,
   ChevronLeft,
   ChevronRight,
+  Grid,
+  MessageSquare,
+  Trophy,
 } from 'lucide-react';
 
 interface NavItem {
@@ -23,6 +26,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { id: 'chart', labelEn: '247 Letters', labelTa: 'எழுத்துக்கள்', icon: Grid },
+  { id: 'speak', labelEn: 'Speak', labelTa: 'பேசுதல்', icon: MessageSquare },
+  { id: 'games', labelEn: 'Games', labelTa: 'விளையாட்டுகள்', icon: Trophy },
   { id: 'recognize', labelEn: 'Recognize', labelTa: 'அறிதல்', icon: PenTool },
   { id: 'generate', labelEn: 'Generate', labelTa: 'உருவாக்கம்', icon: Sparkles },
   { id: 'synthesis', labelEn: 'Write', labelTa: 'எழுதுதல்', icon: Edit3 },
@@ -31,7 +37,6 @@ const navItems: NavItem[] = [
   { id: 'quiz', labelEn: 'Learn', labelTa: 'கற்றல்', icon: BookOpen },
   { id: 'dashboard', labelEn: 'Dashboard', labelTa: 'டாஷ்போர்டு', icon: LayoutDashboard },
   { id: 'history', labelEn: 'History', labelTa: 'வரலாறு', icon: History },
-  { id: 'design', labelEn: 'Design', labelTa: 'வடிவமைப்பு', icon: Palette },
   { id: 'settings', labelEn: 'Settings', labelTa: 'அமைப்புகள்', icon: Settings },
 ];
 
